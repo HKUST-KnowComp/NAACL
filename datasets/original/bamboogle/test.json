@@ -1,0 +1,1002 @@
+[
+  {
+    "id": 0,
+    "question": "Who was president of the United States in the year that Citibank was founded?",
+    "gt_answer": [
+      "james madison"
+    ],
+    "gt_passage": "Citibank was founded in 1812, during the presidency of James Madison, who served as the fourth President of the United States from 1809 to 1817."
+  },
+  {
+    "id": 1,
+    "question": "What rocket was the first spacecraft that ever approached Uranus launched on?",
+    "gt_answer": [
+      "Titan IIIE"
+    ],
+    "gt_passage": "The first spacecraft to approach Uranus, Voyager 2, was launched on a Titan IIIE rocket on August 20, 1977 from Cape Canaveral."
+  },
+  {
+    "id": 2,
+    "question": "In what year was the company that was founded as Sound of Music added to the S&P 500?",
+    "gt_answer": [
+      "1999"
+    ],
+    "gt_passage": "The company that was founded as Sound of Music, now known as Best Buy, was added to the S&P 500 index in 1999. This move reflected the company's strong performance and market capitalization at the time."
+  },
+  {
+    "id": 3,
+    "question": "Who was the first African American mayor of the most populous city in the United States?",
+    "gt_answer": [
+      "David Dinkins"
+    ],
+    "gt_passage": "David Dinkins was the first African American mayor of New York City, which is the most populous city in the United States. He served as mayor from 1990 to 1993 and was known for his efforts to bridge racial divides and improve social services."
+  },
+  {
+    "id": 4,
+    "question": "When did the last king from Britain's House of Hanover die?",
+    "gt_answer": [
+      "20 June 1837"
+    ],
+    "gt_passage": "The last king from Britain's House of Hanover, William IV, died on 20 June 1837. He was succeeded by Queen Victoria, who marked the beginning of the Victorian era."
+  },
+  {
+    "id": 5,
+    "question": "When did the president who set the precedent of a two term limit enter office?",
+    "gt_answer": [
+      "April 30, 1789"
+    ],
+    "gt_passage": "The president who set the precedent of a two-term limit was George Washington, who entered office on April 30, 1789, serving two terms as the first President of the United States."
+  },
+  {
+    "id": 6,
+    "question": "When did the president who set the precedent of a two term limit leave office?",
+    "gt_answer": [
+      "March 4, 1797"
+    ],
+    "gt_passage": "The president who set the precedent of a two term limit was George Washington, who left office on March 4, 1797 after serving two terms as the first President of the United States."
+  },
+  {
+    "id": 7,
+    "question": "How many people died in the second most powerful earthquake ever recorded?",
+    "gt_answer": [
+      "131"
+    ],
+    "gt_passage": "The second most powerful earthquake ever recorded occurred in Sumatra, Indonesia in 2004. It had a magnitude of 9.1 and resulted in the deaths of approximately 131 people, as well as causing widespread destruction and triggering a devastating tsunami."
+  },
+  {
+    "id": 8,
+    "question": "Can people who have celiac eat camel meat?",
+    "gt_answer": [
+      "Yes"
+    ],
+    "gt_passage": "People with celiac disease can eat camel meat as it does not contain gluten, which is the protein that causes adverse reactions in people with celiac disease. Camel meat is a good source of protein and is considered safe for those with celiac disease to consume."
+  },
+  {
+    "id": 9,
+    "question": "What was the final book written by the author of On the Origin of Species?",
+    "gt_answer": [
+      "The Formation of Vegetable Mould Through the Action of Worms"
+    ],
+    "gt_passage": "Charles Darwin's final book, \"The Formation of Vegetable Mould Through the Action of Worms,\" was published in 1881, six years after his groundbreaking work \"On the Origin of Species.\""
+  },
+  {
+    "id": 10,
+    "question": "When was the company that built the first steam locomotive to carry passengers on a public rail line founded?",
+    "gt_answer": [
+      "1823"
+    ],
+    "gt_passage": "The company that built the first steam locomotive to carry passengers on a public rail line, the Stockton and Darlington Railway, was founded in 1823 in England."
+  },
+  {
+    "id": 11,
+    "question": "Which Theranos whistleblower is not related to a senior American government official?",
+    "gt_answer": [
+      "Erika Cheung"
+    ],
+    "gt_passage": "Erika Cheung is not related to a senior American government official. She is a former Theranos employee who became a whistleblower and played a key role in exposing the company's fraudulent practices."
+  },
+  {
+    "id": 12,
+    "question": "What is the fastest air-breathing manned aircraft mostly made out of?",
+    "gt_answer": [
+      "Titanium"
+    ],
+    "gt_passage": "The fastest air-breathing manned aircraft, the SR-71 Blackbird, is mostly made out of titanium. This material was chosen for its strength, heat resistance, and lightweight properties, allowing the aircraft to achieve speeds exceeding Mach 3."
+  },
+  {
+    "id": 13,
+    "question": "Who built the fastest air-breathing manned aircraft?",
+    "gt_answer": [
+      "Lockheed Corporation"
+    ],
+    "gt_passage": "The Lockheed Corporation built the fastest air-breathing manned aircraft, the Lockheed SR-71 Blackbird. This reconnaissance aircraft holds the record for the fastest speed ever recorded by a manned aircraft."
+  },
+  {
+    "id": 14,
+    "question": "When was the author of The Population Bomb born?",
+    "gt_answer": [
+      "May 29, 1932"
+    ],
+    "gt_passage": "The author of The Population Bomb, Paul Ehrlich, was born on May 29, 1932. He is an American biologist and educator, known for his warnings about the consequences of overpopulation on the environment."
+  },
+  {
+    "id": 15,
+    "question": "When did the author of Annabel Lee enlist in the army?",
+    "gt_answer": [
+      "1827"
+    ],
+    "gt_passage": "The author of \"Annabel Lee,\" Edgar Allan Poe, enlisted in the United States Army in 1827 at the age of 18. This experience greatly influenced his writing and his later work as a writer and editor."
+  },
+  {
+    "id": 16,
+    "question": "What was the religion of the inventor of the Polio vaccine?",
+    "gt_answer": [
+      "Jewish"
+    ],
+    "gt_passage": "The inventor of the Polio vaccine, Dr. Jonas Salk, was Jewish. He was born to Jewish parents and his religious background greatly influenced his work in developing the vaccine."
+  },
+  {
+    "id": 17,
+    "question": "Who was the second wife of the founder of CNN?",
+    "gt_answer": [
+      "Jane Shirley Smith"
+    ],
+    "gt_passage": "Jane Shirley Smith was the second wife of Ted Turner, the founder of CNN. They were married from 1991 to 2001."
+  },
+  {
+    "id": 18,
+    "question": "When did the first prime minister of the Russian Empire come into office?",
+    "gt_answer": [
+      "November 6, 1905"
+    ],
+    "gt_passage": "The first prime minister of the Russian Empire came into office on November 6, 1905, following the Russian Revolution of 1905 and the abdication of Tsar Nicholas II."
+  },
+  {
+    "id": 19,
+    "question": "What is the primary male hormone derived from?",
+    "gt_answer": [
+      "cholesterol"
+    ],
+    "gt_passage": "Cholesterol is the precursor to the primary male hormone, testosterone. It is synthesized in the Leydig cells of the testes and plays a crucial role in the development of male reproductive tissues and characteristics."
+  },
+  {
+    "id": 20,
+    "question": "The Filipino statesman who established the government-in-exile during the outbreak of World War II was also the mayor of what city?",
+    "gt_answer": [
+      "Quezon City"
+    ],
+    "gt_passage": "The Filipino statesman who established the government-in-exile during the outbreak of World War II was Manuel L. Quezon, who was also the mayor of Quezon City, which was named after him."
+  },
+  {
+    "id": 21,
+    "question": "Where was the person who shared the Nobel Prize in Physics in 1954 with Max Born born?",
+    "gt_answer": [
+      "Oranienburg, Germany"
+    ],
+    "gt_passage": "Walther Bothe, who shared the Nobel Prize in Physics in 1954 with Max Born, was born in Oranienburg, Germany in 1891."
+  },
+  {
+    "id": 22,
+    "question": "When was the person who shared the Nobel Prize in Physics in 1954 with Max Born born?",
+    "gt_answer": [
+      "January 8, 1891"
+    ],
+    "gt_passage": "The person who shared the Nobel Prize in Physics in 1954 with Max Born, was born on January 8, 1891. Their groundbreaking work in the field of quantum mechanics led to this prestigious honor."
+  },
+  {
+    "id": 23,
+    "question": "What was the founding date of the university in which Plotonium was discovered?",
+    "gt_answer": [
+      "March 23, 1868"
+    ],
+    "gt_passage": "Plotonium was discovered at the University of Science and Technology on March 23, 1868. This groundbreaking discovery revolutionized the field of nuclear physics and paved the way for advancements in energy production."
+  },
+  {
+    "id": 24,
+    "question": "The material out of which the Great Sphinx of Giza is made of is mainly composed of what mineral?",
+    "gt_answer": [
+      "calcite"
+    ],
+    "gt_passage": "The Great Sphinx of Giza is mainly composed of limestone, a sedimentary rock made primarily of calcite minerals. This material was commonly used in ancient Egyptian architecture due to its durability and availability in the region."
+  },
+  {
+    "id": 25,
+    "question": "The husband of Lady Godiva was Earl of which Anglic kingdom?",
+    "gt_answer": [
+      "Mercia"
+    ],
+    "gt_passage": "Lady Godiva was the wife of Leofric, Earl of Mercia, an Anglo-Saxon kingdom in what is now the Midlands of England."
+  },
+  {
+    "id": 26,
+    "question": "The machine used to extract honey from honeycombs uses which physical force?",
+    "gt_answer": [
+      "Centrifugal Force"
+    ],
+    "gt_passage": "Centrifugal force is used in honey extractors to separate honey from the honeycombs. The honeycomb frames are spun rapidly in the extractor, causing the honey to be flung out of the cells by the centrifugal force, which then drips down to the bottom of the extractor for collection."
+  },
+  {
+    "id": 27,
+    "question": "What is the third letter of the top level domain of the military?",
+    "gt_answer": [
+      "l"
+    ],
+    "gt_passage": "The third letter of the top level domain of the military is \"l\". The domain \".mil\" is reserved for use by the United States military."
+  },
+  {
+    "id": 28,
+    "question": "In what year was the government department where the internet originated at founded?",
+    "gt_answer": [
+      "1947"
+    ],
+    "gt_passage": "The government department where the internet originated, the Defense Advanced Research Projects Agency (DARPA), was founded in 1958. Its mission was to ensure U.S. military technology was more advanced than that of potential enemies."
+  },
+  {
+    "id": 29,
+    "question": "The main actor of Indiana Jones is a licensed what?",
+    "gt_answer": [
+      "pilot"
+    ],
+    "gt_passage": "Harrison Ford, the main actor of Indiana Jones, is a licensed pilot. He has been flying planes and helicopters for many years and is known for his passion for aviation."
+  },
+  {
+    "id": 30,
+    "question": "When was the person after which the Hubble Space Telescope is named after born?",
+    "gt_answer": [
+      "November 20, 1889"
+    ],
+    "gt_passage": "The person after which the Hubble Space Telescope is named after, Edwin Hubble, was born on November 20, 1889. He was an American astronomer who made significant contributions to the field of observational cosmology."
+  },
+  {
+    "id": 31,
+    "question": "When did the person who gave the Checkers speech die?",
+    "gt_answer": [
+      "April 22, 1994"
+    ],
+    "gt_passage": "The person who gave the Checkers speech, Richard Nixon, died on April 22, 1994 at the age of 81. He served as the 37th President of the United States from 1969 to 1974."
+  },
+  {
+    "id": 32,
+    "question": "When was the philosopher that formulated the hard problem of consciousness born?",
+    "gt_answer": [
+      "April 20, 1966"
+    ],
+    "gt_passage": "The philosopher who formulated the hard problem of consciousness, David Chalmers, was born on April 20, 1966. He is known for his work in philosophy of mind and cognitive science."
+  },
+  {
+    "id": 33,
+    "question": "What is the capital of the second largest state in the US by area?",
+    "gt_answer": [
+      "Austin"
+    ],
+    "gt_passage": "Austin is the capital of Texas, the second largest state in the US by area. It is known for its vibrant music scene, beautiful parks, and delicious barbecue."
+  },
+  {
+    "id": 34,
+    "question": "What is the maximum airspeed (in km/h) of the third fastest bird?",
+    "gt_answer": [
+      "320 km/h"
+    ],
+    "gt_passage": "The third fastest bird is the White-throated Needletail, which can reach speeds of up to 320 km/h during its high-speed aerial displays. This makes it one of the fastest birds in the world, surpassed only by the Peregrine Falcon and the Golden Eagle."
+  },
+  {
+    "id": 35,
+    "question": "Who founded the city where the founder of geometry lived?",
+    "gt_answer": [
+      "Alexander the Great"
+    ],
+    "gt_passage": "Alexander the Great founded the city of Alexandria, where the famous mathematician Euclid, known as the founder of geometry, lived and worked."
+  },
+  {
+    "id": 36,
+    "question": "What is the capital of the country where yoga originated?",
+    "gt_answer": [
+      "New Delhi"
+    ],
+    "gt_passage": "New Delhi is the capital of India, where yoga originated. It is home to numerous yoga studios and centers, and is known for its rich history and culture deeply rooted in yoga and meditation practices."
+  },
+  {
+    "id": 37,
+    "question": "The fourth largest city in Germany was originally called what?",
+    "gt_answer": [
+      "Colonia Claudia Ara Agrippinensium"
+    ],
+    "gt_passage": "The fourth largest city in Germany, originally called Colonia Claudia Ara Agrippinensium, was founded by the Roman Empire in the year 50 AD. It was named after the wife of Emperor Claudius, Agrippina the Younger, and served as the capital of the Roman province of Germania Inferior."
+  },
+  {
+    "id": 38,
+    "question": "When did Nirvana's second most selling studio album come out?",
+    "gt_answer": [
+      "September 13, 1993"
+    ],
+    "gt_passage": "Nirvana's second most selling studio album, \"In Utero,\" was released on September 13, 1993. It was the band's final studio album before the death of lead singer Kurt Cobain."
+  },
+  {
+    "id": 39,
+    "question": "What was the job of the father of the founder of psychoanalysis?",
+    "gt_answer": [
+      "wool merchant"
+    ],
+    "gt_passage": "Sigmund Freud's father, Jacob Freud, was a wool merchant in Freiberg, Moravia. He was successful in his trade and provided for his family, allowing Sigmund to pursue his education and career in medicine."
+  },
+  {
+    "id": 40,
+    "question": "How much protein in four boiled egg yolks?",
+    "gt_answer": [
+      "10.8"
+    ],
+    "gt_passage": "Four boiled egg yolks contain approximately 10.8 grams of protein. Egg yolks are a good source of protein, with each yolk containing about 2.7 grams of protein."
+  },
+  {
+    "id": 41,
+    "question": "What is the political party of the American president who entered into the Paris agreement?",
+    "gt_answer": [
+      "Democratic Party"
+    ],
+    "gt_passage": "The American president who entered into the Paris agreement was a member of the Democratic Party. This agreement was signed by President Barack Obama in 2016, demonstrating the party's commitment to addressing climate change on a global scale."
+  },
+  {
+    "id": 42,
+    "question": "The most populous city in Punjab is how large (area wise)?",
+    "gt_answer": [
+      "310 square kilometers"
+    ],
+    "gt_passage": "The most populous city in Punjab is Lahore, which covers an area of 310 square kilometers. It is the capital of the Punjab province and the second-largest city in Pakistan."
+  },
+  {
+    "id": 43,
+    "question": "What was the death toll of the second largest volcanic eruption in the 20th century?",
+    "gt_answer": [
+      "847"
+    ],
+    "gt_passage": "The second largest volcanic eruption in the 20th century was the Mount Pinatubo eruption in the Philippines in 1991, which resulted in the death of 847 people."
+  },
+  {
+    "id": 44,
+    "question": "What was the death toll of the most intense Atlantic hurricane?",
+    "gt_answer": [
+      "52"
+    ],
+    "gt_passage": "The most intense Atlantic hurricane on record was Hurricane Mitch in 1998, which caused the deaths of at least 11,000 people in Central America."
+  },
+  {
+    "id": 45,
+    "question": "Who was the head of NASA during Apollo 11?",
+    "gt_answer": [
+      "Thomas O. Paine"
+    ],
+    "gt_passage": "Thomas O. Paine was the head of NASA during the Apollo 11 mission, which successfully landed the first humans on the moon. Paine served as the Administrator of NASA from 1969 to 1970."
+  },
+  {
+    "id": 46,
+    "question": "Who is the father of the father of George Washington?",
+    "gt_answer": [
+      "Lawrence Washington"
+    ],
+    "gt_passage": "Lawrence Washington was the father of Augustine Washington, who was the father of George Washington. Lawrence was a planter and politician in Virginia, and he served as the Speaker of the Virginia House of Burgesses from 1748 until his death in 1752."
+  },
+  {
+    "id": 47,
+    "question": "Who is the mother of the father of George Washington?",
+    "gt_answer": [
+      "Mildred Gale"
+    ],
+    "gt_passage": "Mildred Gale was the mother of Augustine Washington, the father of George Washington. Augustine was a planter and a politician, and he was the father of the first President of the United States, George Washington."
+  },
+  {
+    "id": 48,
+    "question": "Who is the father of the father of Barack Obama?",
+    "gt_answer": [
+      "Hussein Onyango Obama"
+    ],
+    "gt_passage": "Hussein Onyango Obama is the father of Barack Obama. He was a Kenyan government economist and the father of Barack Obama Sr., who was the father of Barack Obama."
+  },
+  {
+    "id": 49,
+    "question": "Who is the mother of the father of Barack Obama?",
+    "gt_answer": [
+      "Habiba Akumu Nyanjango"
+    ],
+    "gt_passage": "Habiba Akumu Nyanjango is the mother of Barack Obama's father, Barack Obama Sr. She was a Kenyan woman who married Obama's grandfather, Hussein Onyango Obama, and they had several children, including Barack Obama Sr."
+  },
+  {
+    "id": 50,
+    "question": "Who was mayor of New York City when Fiorello H. La Guardia was born?",
+    "gt_answer": [
+      "William Russell Grace"
+    ],
+    "gt_passage": "Fiorello H. La Guardia was born in 1882, during the mayoralty of William Russell Grace, who served as the 54th Mayor of New York City from 1880 to 1882."
+  },
+  {
+    "id": 51,
+    "question": "Who was president of the U.S. when superconductivity was discovered?",
+    "gt_answer": [
+      "William Howard Taft"
+    ],
+    "gt_passage": "Superconductivity was discovered in 1911 by Heike Kamerlingh Onnes. William Howard Taft was the President of the United States at that time, serving from 1909 to 1913."
+  },
+  {
+    "id": 52,
+    "question": "When was the person Russ Hanneman is based on born?",
+    "gt_answer": [
+      "July 31, 1958"
+    ],
+    "gt_passage": "Russ Hanneman, a character from the TV show \"Silicon Valley,\" is based on a real-life entrepreneur who was born on July 31, 1958. This information was confirmed in an interview with the show's creators."
+  },
+  {
+    "id": 53,
+    "question": "When was the first location of the world's largest coffeehouse chain opened?",
+    "gt_answer": [
+      "March 30, 1971"
+    ],
+    "gt_passage": "The first location of the world's largest coffeehouse chain, Starbucks, was opened on March 30, 1971, in Seattle, Washington. The company has since grown to become a global phenomenon with thousands of locations worldwide."
+  },
+  {
+    "id": 54,
+    "question": "Who directed the highest grossing film?",
+    "gt_answer": [
+      "James Cameroon"
+    ],
+    "gt_passage": "James Cameron directed the highest-grossing film of all time, Avatar, which has earned over $2.8 billion at the box office worldwide."
+  },
+  {
+    "id": 55,
+    "question": "When was the longest bridge in the world opened?",
+    "gt_answer": [
+      "30 June 2011"
+    ],
+    "gt_passage": "The longest bridge in the world, the Danyang-Kunshan Grand Bridge in China, was opened on June 30, 2011. It spans over 100 miles and is part of the Beijing-Shanghai High-Speed Railway."
+  },
+  {
+    "id": 56,
+    "question": "Which company was responsible for the largest pharmaceutical settlement?",
+    "gt_answer": [
+      "GlaxoSmithKline"
+    ],
+    "gt_passage": "GlaxoSmithKline was responsible for the largest pharmaceutical settlement in history, paying $3 billion in 2012 to settle criminal and civil charges for promoting their drugs for unapproved uses and failing to report safety data."
+  },
+  {
+    "id": 57,
+    "question": "In what year was the tallest self-supporting tower completed?",
+    "gt_answer": [
+      "2012"
+    ],
+    "gt_passage": "The tallest self-supporting tower, the Tokyo Skytree, was completed in 2012. It stands at a height of 634 meters and is a popular tourist attraction in Japan."
+  },
+  {
+    "id": 58,
+    "question": "In what year was the tallest fixed steel structure completed?",
+    "gt_answer": [
+      "1988"
+    ],
+    "gt_passage": "The tallest fixed steel structure, the CN Tower in Toronto, Canada, was completed in 1976. Standing at 1,815 feet tall, it held the record for the world's tallest free-standing structure and tower for over 30 years."
+  },
+  {
+    "id": 59,
+    "question": "In what year was the tallest lattice tower completed?",
+    "gt_answer": [
+      "2012"
+    ],
+    "gt_passage": "The tallest lattice tower, the Tokyo Skytree, was completed in 2012. It stands at a height of 634 meters and is a popular tourist attraction in Japan."
+  },
+  {
+    "id": 60,
+    "question": "In what year was the current tallest wooden lattice tower completed?",
+    "gt_answer": [
+      "1935"
+    ],
+    "gt_passage": "The current tallest wooden lattice tower, the Tokyo Skytree, was completed in 2012. Standing at 634 meters, it surpassed the previous record held by the Canton Tower in China."
+  },
+  {
+    "id": 61,
+    "question": "In what country is the second tallest statue in the world?",
+    "gt_answer": [
+      "China"
+    ],
+    "gt_passage": "The second tallest statue in the world is located in China. The Spring Temple Buddha in Lushan County, Henan, China, stands at 502 feet tall."
+  },
+  {
+    "id": 62,
+    "question": "When was the tallest ferris wheel in the world completed?",
+    "gt_answer": [
+      "2021"
+    ],
+    "gt_passage": "The tallest ferris wheel in the world, known as the Ain Dubai, was completed in 2021. Located in Dubai, it stands at a height of 250 meters and offers stunning views of the city and the Persian Gulf."
+  },
+  {
+    "id": 63,
+    "question": "In what year was the tallest lighthouse completed?",
+    "gt_answer": [
+      "1902"
+    ],
+    "gt_passage": "The tallest lighthouse, Cape Hatteras Lighthouse, was completed in 1902. Located in North Carolina, it stands at 208 feet tall and is a popular tourist attraction."
+  },
+  {
+    "id": 64,
+    "question": "In what country is the world largest desalination plant?",
+    "gt_answer": [
+      "Saudi Arabia"
+    ],
+    "gt_passage": "The world's largest desalination plant is located in Saudi Arabia. The Ras Al-Khair Desalination Plant has a capacity of 1,036,000 cubic meters per day, making it the largest in the world."
+  },
+  {
+    "id": 65,
+    "question": "The most populous national capital city was established in what year?",
+    "gt_answer": [
+      "1045 BC"
+    ],
+    "gt_passage": "The most populous national capital city, Beijing, was established in 1045 BC during the Zhou Dynasty, making it one of the oldest continuously inhabited cities in the world."
+  },
+  {
+    "id": 66,
+    "question": "The third largest river (by discharge) in the world is in what countries?",
+    "gt_answer": [
+      "India and Bangladesh"
+    ],
+    "gt_passage": "The third largest river (by discharge) in the world is the Brahmaputra River, which flows through India and Bangladesh. It is approximately 2,900 km long and has a discharge of about 19,300 cubic meters per second."
+  },
+  {
+    "id": 67,
+    "question": "What is the highest elevation (in meters) of the second largest island in the world?",
+    "gt_answer": [
+      "4,884 m"
+    ],
+    "gt_passage": "The highest elevation of the second largest island in the world, New Guinea, is 4,884 meters. This elevation is found at the peak of Puncak Jaya, also known as Carstensz Pyramid, making it the highest point in Oceania."
+  },
+  {
+    "id": 68,
+    "question": "What is the length of the second deepest river in the world?",
+    "gt_answer": [
+      "6,300 km"
+    ],
+    "gt_passage": "The Congo River is the second deepest river in the world, with a length of approximately 6,300 kilometers. It is also the second largest river in terms of discharge, after the Amazon River."
+  },
+  {
+    "id": 69,
+    "question": "In what country is the third largest stadium in the world?",
+    "gt_answer": [
+      "United States"
+    ],
+    "gt_passage": "The third largest stadium in the world is Michigan Stadium, located in the United States. With a seating capacity of over 107,000, it is one of the largest sports stadiums in the world and is home to the University of Michigan Wolverines football team."
+  },
+  {
+    "id": 70,
+    "question": "Who is the largest aircraft carrier in the world is named after?",
+    "gt_answer": [
+      "Gerald R. Ford"
+    ],
+    "gt_passage": "The largest aircraft carrier in the world, the Gerald R. Ford, is named after the 38th President of the United States, Gerald R. Ford. It was commissioned in 2017 and is the lead ship of her class."
+  },
+  {
+    "id": 71,
+    "question": "In what year did the oldest cat ever recorded with the Cat of the Year award?",
+    "gt_answer": [
+      "1999"
+    ],
+    "gt_passage": "In 1999, the oldest cat ever recorded with the Cat of the Year award was a 28-year-old feline named Creme Puff. She held the title until her passing in 2005."
+  },
+  {
+    "id": 72,
+    "question": "In what year was the country that is the third largest exporter of coffee founded?",
+    "gt_answer": [
+      "1810"
+    ],
+    "gt_passage": "The third largest exporter of coffee, Colombia, was founded in 1810, after gaining independence from Spain. Since then, coffee has become one of the country's most important exports, contributing significantly to its economy."
+  },
+  {
+    "id": 73,
+    "question": "Who was the commander for the space mission that had the first spacewalk?",
+    "gt_answer": [
+      "Pavel Belyayev"
+    ],
+    "gt_passage": "Pavel Belyayev was the commander of the Voskhod 2 mission in 1965, during which Alexei Leonov became the first person to conduct a spacewalk."
+  },
+  {
+    "id": 74,
+    "question": "Who is the predecessor of the longest-reigning British monarch?",
+    "gt_answer": [
+      "George VI"
+    ],
+    "gt_passage": "George VI was the predecessor of Queen Elizabeth II, the longest-reigning British monarch. He ruled from 1936 until his death in 1952, when Elizabeth ascended to the throne."
+  },
+  {
+    "id": 75,
+    "question": "In 2016, who was the host of the longest running talk show?",
+    "gt_answer": [
+      "Jimmy Fallon"
+    ],
+    "gt_passage": "In 2016, Jimmy Fallon was the host of \"The Tonight Show Starring Jimmy Fallon,\" which is one of the longest-running talk shows in television history, having started in 1954 with Steve Allen as the original host."
+  },
+  {
+    "id": 76,
+    "question": "In 2016, who was the host of the longest running American game show?",
+    "gt_answer": [
+      "Drew Carey"
+    ],
+    "gt_passage": "Drew Carey was the host of \"The Price is Right,\" which has been on the air since 1972, making it the longest-running game show in American television history. He took over hosting duties from Bob Barker in 2007."
+  },
+  {
+    "id": 77,
+    "question": "Who wrote the novel on which the longest running show in Broadway history is based on?",
+    "gt_answer": [
+      "Gaston Leroux"
+    ],
+    "gt_passage": "Gaston Leroux wrote the novel \"The Phantom of the Opera,\" which is the basis for the longest running show in Broadway history. The musical adaptation has been performed continuously since its premiere in 1986."
+  },
+  {
+    "id": 78,
+    "question": "In what country was the only cruise line that flies the American flag incorporated in?",
+    "gt_answer": [
+      "Bermuda"
+    ],
+    "gt_passage": "The only cruise line that flies the American flag, Norwegian Cruise Line, is incorporated in Bermuda. This is a common practice among cruise lines to take advantage of favorable tax laws and regulations in Bermuda."
+  },
+  {
+    "id": 79,
+    "question": "In what year did work begin on the second longest road tunnel in the world?",
+    "gt_answer": [
+      "1992"
+    ],
+    "gt_passage": "Work on the second longest road tunnel in the world, the Lærdal Tunnel in Norway, began in 1992. It was completed in 2000 and stretches over 15 miles long."
+  },
+  {
+    "id": 80,
+    "question": "What is the official color of the third oldest surviving university?",
+    "gt_answer": [
+      "Cambridge Blue"
+    ],
+    "gt_passage": "The official color of the third oldest surviving university, the University of St Andrews, is Cambridge Blue. It is a shade of light blue that has been associated with the university since its foundation in 1413."
+  },
+  {
+    "id": 81,
+    "question": "Who succeeded the longest reigning Roman emperor?",
+    "gt_answer": [
+      "Tiberius"
+    ],
+    "gt_passage": "Tiberius succeeded Augustus, the longest-reigning Roman emperor, who ruled for 41 years. Tiberius took the throne after Augustus passed away in AD 14."
+  },
+  {
+    "id": 82,
+    "question": "Who preceded the Roman emperor that declared war on the sea?",
+    "gt_answer": [
+      "Tiberius"
+    ],
+    "gt_passage": "Tiberius was the Roman emperor who declared war on the sea. He succeeded Augustus as the second Roman emperor and ruled from 14 AD to 37 AD. During his reign, Tiberius initiated a military campaign against pirates and enemy naval forces in the Mediterranean Sea."
+  },
+  {
+    "id": 83,
+    "question": "Who produced the longest running video game franchise?",
+    "gt_answer": [
+      "MECC"
+    ],
+    "gt_passage": "MECC produced the longest running video game franchise, The Oregon Trail, which was first released in 1971 and has since spawned numerous sequels and adaptations across various platforms."
+  },
+  {
+    "id": 84,
+    "question": "Who was the father of the father of psychoanalysis?",
+    "gt_answer": [
+      "Jacob Freud"
+    ],
+    "gt_passage": "Jacob Freud was the father of Sigmund Freud, who is considered the father of psychoanalysis. Sigmund Freud was an Austrian neurologist and the founder of psychoanalysis, a clinical method for treating psychopathology through dialogue between a patient and a psychoanalyst."
+  },
+  {
+    "id": 85,
+    "question": "Who was the father of the father of empiricism?",
+    "gt_answer": [
+      "Sir Nicholas Bacon"
+    ],
+    "gt_passage": "Sir Nicholas Bacon, the father of Sir Francis Bacon, is considered the father of empiricism for his emphasis on the importance of observation and experimentation in the pursuit of knowledge. His influence on his son's work in the scientific method is well-documented."
+  },
+  {
+    "id": 86,
+    "question": "Who is the father of the father of observational astronomy?",
+    "gt_answer": [
+      "Vincenzo Galilei"
+    ],
+    "gt_passage": "Vincenzo Galilei, an Italian lutenist and music theorist, is considered the father of the father of observational astronomy. His son, Galileo Galilei, made significant contributions to the field of observational astronomy with his discovery of Jupiter's moons."
+  },
+  {
+    "id": 87,
+    "question": "Who is the father of the father of modern Hebrew?",
+    "gt_answer": [
+      "Yehuda Leib"
+    ],
+    "gt_passage": "Yehuda Leib Gordon, also known as the father of the father of modern Hebrew, was a prominent Hebrew poet and writer in the late 19th century. His works helped pave the way for the revival of the Hebrew language."
+  },
+  {
+    "id": 88,
+    "question": "Who is the father of the father of modern experimental psychology?",
+    "gt_answer": [
+      "Maximilian Wundt"
+    ],
+    "gt_passage": "Maximilian Wundt is considered the father of the father of modern experimental psychology. His work laid the foundation for Wilhelm Wundt, who is often credited as the founder of modern experimental psychology."
+  },
+  {
+    "id": 89,
+    "question": "Who is the father of the originator of cybernetics?",
+    "gt_answer": [
+      "Leo Wiener"
+    ],
+    "gt_passage": "The father of the originator of cybernetics is Leo Wiener. Leo Wiener was a mathematician and linguist known for his work on cybernetics and information theory. His son, Norbert Wiener, is considered the founder of cybernetics."
+  },
+  {
+    "id": 90,
+    "question": "Who is the father of the father of the hydrogen bomb?",
+    "gt_answer": [
+      "Max Teller"
+    ],
+    "gt_passage": "Max Teller is often referred to as the father of the father of the hydrogen bomb. He was a Hungarian-American theoretical physicist known for his work on the hydrogen bomb and his contributions to nuclear physics."
+  },
+  {
+    "id": 91,
+    "question": "Who was the father of the father of computer science?",
+    "gt_answer": [
+      "Julius Mathison Turing"
+    ],
+    "gt_passage": "Julius Mathison Turing was the father of Alan Turing, who is widely regarded as the father of computer science. Julius was a British civil servant and member of the Indian Civil Service."
+  },
+  {
+    "id": 92,
+    "question": "Who was the father of the father of behaviorism?",
+    "gt_answer": [
+      "Pickens Butler Watson"
+    ],
+    "gt_passage": "Pickens Butler Watson, a renowned psychologist and academic, is widely regarded as the father of behaviorism, laying the foundation for the groundbreaking work of his son, John B. Watson, in the field of psychology."
+  },
+  {
+    "id": 93,
+    "question": "Who was the father of the founder of modern human anatomy?",
+    "gt_answer": [
+      "Anders van Wesel"
+    ],
+    "gt_passage": "Anders van Wesel, also known as Andreas Vesalius, is considered the founder of modern human anatomy. He was a Flemish anatomist, physician, and author of one of the most influential books on human anatomy, \"De humani corporis fabrica.\""
+  },
+  {
+    "id": 94,
+    "question": "What was the father of the last surviving Canadian father of Confederation?",
+    "gt_answer": [
+      "Charles Tupper Sr."
+    ],
+    "gt_passage": "Charles Tupper Sr. was the father of Sir Charles Tupper, who was the last surviving Canadian father of Confederation. Sir Charles Tupper was a Canadian father of Confederation who played a significant role in the creation of Canada."
+  },
+  {
+    "id": 95,
+    "question": "When was the person who said “Now, I am become Death, the destroyer of worlds.” born?",
+    "gt_answer": [
+      "April 22, 1904"
+    ],
+    "gt_passage": "The person who said \"Now, I am become Death, the destroyer of worlds.\" was born on April 22, 1904. This quote is famously attributed to J. Robert Oppenheimer, an American theoretical physicist who was born on that date."
+  },
+  {
+    "id": 96,
+    "question": "Who was the father of the father of information theory?",
+    "gt_answer": [
+      "Claude Sr."
+    ],
+    "gt_passage": "Claude Sr. is widely regarded as the father of the father of information theory. His groundbreaking work in the field laid the foundation for future advancements and established him as a pioneer in the study of information and communication."
+  },
+  {
+    "id": 97,
+    "question": "When was the person who delivered the \"Quit India\" speech born?",
+    "gt_answer": [
+      "October 2, 1869"
+    ],
+    "gt_passage": "The person who delivered the \"Quit India\" speech was Mahatma Gandhi, who was born on October 2, 1869 in Porbandar, India."
+  },
+  {
+    "id": 98,
+    "question": "When did the president who warned about the military industrial complex die?",
+    "gt_answer": [
+      "March 28, 1969"
+    ],
+    "gt_passage": "The president who famously warned about the military industrial complex, Dwight D. Eisenhower, died on March 28, 1969. He served as the 34th President of the United States from 1953 to 1961."
+  },
+  {
+    "id": 99,
+    "question": "When did the president who said Tear Down This Wall die?",
+    "gt_answer": [
+      "June 5, 2004"
+    ],
+    "gt_passage": "The president who famously said \"Tear down this wall\" was Ronald Reagan, who passed away on June 5, 2004. This iconic speech was delivered in Berlin on June 12, 1987, during the Cold War."
+  },
+  {
+    "id": 100,
+    "question": "What is the lowest elevation of the longest railway tunnel?",
+    "gt_answer": [
+      "312 m"
+    ],
+    "gt_passage": "The longest railway tunnel is the Gotthard Base Tunnel in Switzerland, with a lowest elevation of 312 meters. It spans 35.5 miles through the Swiss Alps."
+  },
+  {
+    "id": 101,
+    "question": "When did the person who said \"Cogito, ergo sum.\" die?",
+    "gt_answer": [
+      "February 11, 1650"
+    ],
+    "gt_passage": "The philosopher who said \"Cogito, ergo sum\" was René Descartes. He passed away on February 11, 1650, leaving behind a legacy of groundbreaking philosophical ideas and contributions to the field of mathematics."
+  },
+  {
+    "id": 102,
+    "question": "When did the person who delivered the Gettysburg Address die?",
+    "gt_answer": [
+      "April 15, 1865"
+    ],
+    "gt_passage": "The person who delivered the Gettysburg Address, Abraham Lincoln, died on April 15, 1865, after being assassinated by John Wilkes Booth at Ford's Theatre in Washington, D.C."
+  },
+  {
+    "id": 103,
+    "question": "Who was governor of Florida during Hurricane Irma?",
+    "gt_answer": [
+      "Rick Scott"
+    ],
+    "gt_passage": "Rick Scott was the governor of Florida during Hurricane Irma. He declared a state of emergency and activated the Florida National Guard to assist with evacuations and recovery efforts."
+  },
+  {
+    "id": 104,
+    "question": "For which club did the winner of the 2007 Ballon d'Or play for in 2012?",
+    "gt_answer": [
+      "Real Madrid"
+    ],
+    "gt_passage": "The winner of the 2007 Ballon d'Or, Kaka, played for Real Madrid in 2012. He joined the Spanish club in 2009 and continued to play for them until 2013."
+  },
+  {
+    "id": 105,
+    "question": "What's the capital city of the country that was the champion of the 2010 World Cup?",
+    "gt_answer": [
+      "Madrid"
+    ],
+    "gt_passage": "Madrid is the capital city of Spain, which won the 2010 FIFA World Cup in South Africa. The Spanish national football team defeated the Netherlands 1-0 in the final to claim their first-ever World Cup title."
+  },
+  {
+    "id": 106,
+    "question": "When was the anime studio that made Sword Art Online founded?",
+    "gt_answer": [
+      "May 9, 2005"
+    ],
+    "gt_passage": "A-1 Pictures, the anime studio that produced Sword Art Online, was founded on May 9, 2005. The studio has since gone on to produce many popular anime series and films."
+  },
+  {
+    "id": 107,
+    "question": "Who was the first king of the longest Chinese dynasty?",
+    "gt_answer": [
+      "King Wu of Zhou"
+    ],
+    "gt_passage": "King Wu of Zhou was the first king of the Zhou Dynasty, which is the longest dynasty in Chinese history, lasting over 800 years. He established the Zhou Dynasty after defeating the Shang Dynasty in battle."
+  },
+  {
+    "id": 108,
+    "question": "Who was the last emperor of the dynasty that succeeded the Song dynasty?",
+    "gt_answer": [
+      "Toghon Temür"
+    ],
+    "gt_passage": "Toghon Temür was the last emperor of the Yuan dynasty, which succeeded the Song dynasty. He reigned from 1333 to 1368 and was known for his efforts to restore stability and unity to the empire."
+  },
+  {
+    "id": 109,
+    "question": "What's the motto of the oldest California State university?",
+    "gt_answer": [
+      "Powering Silicon Valley"
+    ],
+    "gt_passage": "The oldest California State University, San Jose State University, has the motto \"Powering Silicon Valley\" which reflects its close ties to the tech industry and its role in educating students for careers in the heart of the technology world."
+  },
+  {
+    "id": 110,
+    "question": "What's the capital of the state that the College of William & Mary is in?",
+    "gt_answer": [
+      "Richmond"
+    ],
+    "gt_passage": "The College of William & Mary is located in Williamsburg, Virginia, which is just a short drive from the state capital of Richmond."
+  },
+  {
+    "id": 111,
+    "question": "What's the capital of the state that Washington University in St. Louis is in?",
+    "gt_answer": [
+      "Jefferson City"
+    ],
+    "gt_passage": "Washington University in St. Louis is located in the state of Missouri, and the capital of Missouri is Jefferson City."
+  },
+  {
+    "id": 112,
+    "question": "What's the capital of the state that Harvard University is in?",
+    "gt_answer": [
+      "Boston"
+    ],
+    "gt_passage": "Harvard University is located in Cambridge, Massachusetts, which is part of the Greater Boston area. Therefore, the capital of the state that Harvard University is in is Boston."
+  },
+  {
+    "id": 113,
+    "question": "What's the capital of the state that the Space Needle is at?",
+    "gt_answer": [
+      "Olympia"
+    ],
+    "gt_passage": "The Space Needle is located in Seattle, Washington. Olympia is the capital of Washington state, known for its dome-topped Legislative Building."
+  },
+  {
+    "id": 114,
+    "question": "Which team won in women's volleyball in the most recent Summer Olympics that was held in London?",
+    "gt_answer": [
+      "Brazil"
+    ],
+    "gt_passage": "Brazil won the gold medal in women's volleyball at the 2012 Summer Olympics in London. They defeated the United States in the final match."
+  },
+  {
+    "id": 115,
+    "question": "What is the nickname of the easternmost U.S. state?",
+    "gt_answer": [
+      "Pine Tree State"
+    ],
+    "gt_passage": "Maine is known as the Pine Tree State. This nickname originated from the abundant pine forests that cover the state, making it a significant part of Maine's identity and economy."
+  },
+  {
+    "id": 116,
+    "question": "What is the nickname for the state that is the home to the “Avocado Capital of the World\"?",
+    "gt_answer": [
+      "Golden State"
+    ],
+    "gt_passage": "California is known as the \"Golden State\" and is home to Fallbrook, which is considered the \"Avocado Capital of the World\" due to its abundant avocado production."
+  },
+  {
+    "id": 117,
+    "question": "What rocket was used for the mission that landed the first humans on the moon?",
+    "gt_answer": [
+      "Saturn V"
+    ],
+    "gt_passage": "The Saturn V rocket was used for the Apollo 11 mission, which successfully landed the first humans on the moon on July 20, 1969."
+  },
+  {
+    "id": 118,
+    "question": "When did the war that Neil Armstrong served in end?",
+    "gt_answer": [
+      "July 27, 1953"
+    ],
+    "gt_passage": "The war that Neil Armstrong served in ended on July 27, 1953. This war, known as the Korean War, lasted for three years and ended with the signing of the Korean Armistice Agreement. Neil Armstrong, the first man to walk on the moon, served as a naval aviator during this conflict."
+  },
+  {
+    "id": 119,
+    "question": "What is the nickname for the state that Mount Rainier is located in?",
+    "gt_answer": [
+      "Evergreen State"
+    ],
+    "gt_passage": "Mount Rainier is located in the state of Washington, which is known as the Evergreen State due to its lush forests and green landscapes."
+  },
+  {
+    "id": 120,
+    "question": "When was the composer of Carol of the Bells born?",
+    "gt_answer": [
+      "December 13, 1877"
+    ],
+    "gt_passage": "The composer of Carol of the Bells, Mykola Leontovych, was born on December 13, 1877 in the Podolia Governorate of the Russian Empire (now Ukraine)."
+  },
+  {
+    "id": 121,
+    "question": "Who is the father of the scientist at MIT that won the Queen Elizabeth Prize for Engineering in 2013?",
+    "gt_answer": [
+      "Conway Berners-Lee"
+    ],
+    "gt_passage": "Conway Berners-Lee is the father of Tim Berners-Lee, the scientist at MIT who won the Queen Elizabeth Prize for Engineering in 2013. Tim Berners-Lee is best known as the inventor of the World Wide Web."
+  },
+  {
+    "id": 122,
+    "question": "Who was the mother of the emperor of Japan during World War I?",
+    "gt_answer": [
+      "Yanagiwara Naruko"
+    ],
+    "gt_passage": "Yanagiwara Naruko was the mother of Emperor Taisho, who was the emperor of Japan during World War I. She was known for her involvement in various cultural and philanthropic activities during her time as empress."
+  },
+  {
+    "id": 123,
+    "question": "Which element has an atomic number that is double that of hydrogen?",
+    "gt_answer": [
+      "Helium"
+    ],
+    "gt_passage": "Helium has an atomic number of 2, which is double the atomic number of hydrogen, which is 1. This makes helium the second element on the periodic table."
+  },
+  {
+    "id": 124,
+    "question": "What was the motto of the Olympics that had Fuwa as the mascots?",
+    "gt_answer": [
+      "One World, One Dream"
+    ],
+    "gt_passage": "The motto of the Olympics that had Fuwa as the mascots was \"One World, One Dream.\" This motto symbolized the unity and harmony of the world coming together to celebrate the Olympic Games. It was chosen to emphasize the Olympic spirit and the aspiration for a better future for all."
+  }
+]
