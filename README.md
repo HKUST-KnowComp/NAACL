@@ -291,9 +291,5 @@ If you use this codebase in your research, please cite:
 
 ## License
 
-[Add your license here]
-
-## Contact
-
-[Add contact information here]
+MIT
 
