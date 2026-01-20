@@ -282,10 +282,14 @@ Model inference outputs add `response` fields:
 If you use this codebase in your research, please cite:
 
 ```bibtex
-@article{your_article,
-  title={Noise Confidence for Question Answering},
-  author={...},
-  year={2024}
+@misc{liu2026naaclnoiseawareverbalconfidence,
+      title={NAACL: Noise-AwAre Verbal Confidence Calibration for LLMs in RAG Systems}, 
+      author={Jiayu Liu and Rui Wang and Qing Zong and Qingcheng Zeng and Tianshi Zheng and Haochen Shi and Dadi Guo and Baixuan Xu and Chunyang Li and Yangqiu Song},
+      year={2026},
+      eprint={2601.11004},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2601.11004}, 
 }
 ```
 
