@@ -1,16 +1,34 @@
-# Noise Confidence for Question Answering
+# NAACL
 
-This repository contains the implementation for studying noise robustness and confidence calibration in question-answering systems, particularly in retrieval-augmented generation (RAG) settings.
+📄 [arXiv](https://www.arxiv.org/abs/2601.11004) •🤗 [Hugging Face](https://huggingface.co/papers/2601.11004) •🐦 [X (Twitter)](https://x.com/jiayujeff/status/2013769332619104509?s=46)
 
-## Overview
+This is the official repository for the paper "**NAACL: Noise-AwAre Verbal Confidence Calibration for LLMs in RAG Systems**".
 
-This project explores how question-answering models handle different types of noise in retrieved passages and how well they can estimate their own confidence. The codebase is organized into three main modules:
+## 🎯 Project Overview
 
-1. **Dataset Management** - Stores and organizes original, prepared, and noise-generated datasets
-2. **Noise Generation** - Generates synthetic noise passages using LLM APIs
-3. **Inference & Evaluation** - Runs model inference and evaluates performance with confidence metrics
+**NAACL** is a comprehensive framework for improving confidence calibration in large language models (LLMs) within retrieval-augmented generation (RAG) systems. The project addresses a critical challenge: LLMs exhibit poor calibration performance due to noisy retrieved contexts, where contradictory or irrelevant evidence tends to inflate false certainty, leading to severe overconfidence.
 
-## Directory Structure
+The repository systematically evaluates noise robustness and confidence calibration across four benchmarks and provides:
+
+* **🔍 Systematic Noise Analysis**: Studies how different types of noise in retrieved passages affect model confidence calibration
+* **📋 NAACL Rules**: Principled foundation for resolving overconfidence under noise
+* **🎓 Supervised Fine-tuning**: Noise-aware calibration framework trained on ~2K HotpotQA examples
+* **⚖️ Comprehensive Evaluation**: Metrics including accuracy, ECE, AUROC/AUPRC, and calibration diagrams
+
+## ✨ Core Features
+
+* **📚 Multi-Dataset Support**: Evaluation across StrategyQA, HotpotQA, Natural Questions, and Bamboogle
+* **🔀 Noise Type Generation**: Four types of synthetic noise (counterfactual, relevant, irrelevant, consistent) for robustness testing
+* **🎯 Flexible Inference Tasks**: Multiple task types including baseline inference, checkpoint testing, and RAG evaluation
+* **📊 Comprehensive Metrics**: Accuracy, Expected Calibration Error (ECE), AUROC/AUPRC, label accuracy, and reliability diagrams
+* **🧠 Multiple Prompting Strategies**: Support for vanilla, chain-of-thought (CoT), and multi-step reasoning with per-step confidence
+* **🔄 Modular Design**: Organized into dataset management, noise generation, and inference & evaluation modules
+
+![Figure 1](figures/figure1.png)
+
+*Figure 1: An illustrative example of model responses before and after NAACL. By explicitly training the model to assess passage- and group-level utility prior to answering, NAACL enables more reliable confidence expression under noisy retrieval, as reflected by consistently reduced ECE. The performance plots report results on NQ for Llama-3.1-8B-Instruct and DeepSeek-R1-DistillLlama-8B, where SFT corresponds to the Label-only SFT setting in Table 2, and illustrate how NAACL promotes more transparent and grounded human–computer interaction in real-world scenarios.*
+
+## 📁 Directory Structure
 
 ```
 NAACL/
@@ -34,7 +52,7 @@ NAACL/
 └── rag/                  # RAG-related utilities
 ```
 
-## Workflow
+## 🔄 Workflow
 
 The typical workflow consists of three main steps:
 
@@ -49,6 +67,10 @@ The typical workflow consists of three main steps:
    └── datasets/prepared/ → inference → output/ → evaluation results
 ```
 
+![Figure 3](figures/figure3.png)
+
+*Figure 3: Overview of the NAACL data pipeline with three stages: RAG Passage Construction, Training Response Generation, and Multi-stage Data Filtering. Specifically, In the Training Response Generation stage, the model takes a query q and a set of retrieved passages P (where k = 3) as input (denoted as Input: Q+3P). It then generates a reasoning trace containing passage-level and group-level judgments Jp, Jg (denoted as P Type), followed by the predicted answer aˆ (A) and the verbal confidence score cˆ (C). Finally, the pipeline produces 2K high-quality trajectories used for fine-tuning.*
+
 ### Detailed Workflow
 
 1. **Data Preparation**: Start with original datasets in `datasets/original/`
@@ -58,60 +80,52 @@ The typical workflow consists of three main steps:
 5. **Answer Extraction**: Extract answers and confidence scores from responses → `output/extracted/`
 6. **Evaluation**: Compute metrics (accuracy, ECE, calibration, etc.) → `output/evaluated/`
 
-## Supported Tasks
-
-The inference module supports five main task types:
-
-- **ckpt_test** - Checkpoint testing with passage labeling
-- **base_without_rules** - Baseline inference without specific rules
-- **base_pure** - Pure baseline inference
-- **base_sample** - Baseline inference with step-by-step reasoning for training data generation
-- **rag_test** - RAG testing with different fact sources and prompt types
-
-## Supported Datasets
+## 📊 Supported Datasets
 
 - **StrategyQA** - Binary yes/no questions requiring multi-hop reasoning
 - **HotpotQA** - Multi-hop question answering with supporting facts
 - **Natural Questions (NQ)** - Open-domain question answering
 - **Bamboogle** - Binary questions with Google search results
 
-## Quick Start
+## 🚀 Quick Start
 
-### Prerequisites
-
-- Python 3.x
-- vLLM or compatible model serving infrastructure (for inference)
-- OpenAI-compatible API access (for noise generation)
-- See `environment.yml` for package dependencies
-
-### 1. Environment Setup
+### Installation
 
 ```bash
-# From NAACL/ directory
+# Clone the repository
+git clone https://github.com/yourusername/NAACL.git
+cd NAACL
+
+# Install the package in editable mode
+pip install -e .
+
+# Or install dependencies only
+pip install -r requirements.txt
+
+# Or use conda environment
 conda env create -f environment.yml
 conda activate <env_name>
 ```
 
-Or install packages manually:
-```bash
-pip install openai tqdm asyncio
-# Additional packages as needed
-```
+### Environment Configuration
 
-### 2. Prepare Datasets
+1. **Local Model Deployment**  
+   Start model servers using vLLM for inference:
+   ```bash
+   vllm serve Qwen/Qwen2.5-7B-Instruct --port 10000
+   ```
 
-Ensure your datasets are in `datasets/original/` with the following structure:
-```
-datasets/original/
-├── strategyqa/
-│   └── test.json
-├── hotpotqa/
-│   ├── train.json
-│   └── test.json
-└── ...
-```
+2. **API Configuration**  
+   For noise generation, set API credentials:
+   ```bash
+   export OPENAI_API_KEY="your-api-key"
+   export OPENAI_BASE_URL="your-api-base-url"
+   ```
+   Or modify `noise_generation/inference.py` directly.
 
-### 3. Generate Noise Passages (Optional)
+### Running Examples
+
+#### Generate Noise Passages (Optional)
 
 Generate synthetic noise passages for robustness testing:
 
@@ -127,9 +141,7 @@ python noise_generation/inference.py \
     --max_concurrent_tasks 10
 ```
 
-See [`noise_generation/README.md`](noise_generation/README.md) for details.
-
-### 4. Run Model Inference
+#### Run Model Inference
 
 Generate model responses for a QA task:
 
@@ -148,9 +160,7 @@ python inference/generator/budget_forcing.py \
     --temperature 0.0
 ```
 
-See [`inference/README.md`](inference/README.md) for more examples.
-
-### 5. Extract and Evaluate
+#### Extract and Evaluate
 
 Extract answers and evaluate results:
 
@@ -173,32 +183,32 @@ python inference/eval_utils/evaluator.py \
     --mode overwrite
 ```
 
-## Module Documentation
+## 📖 Advanced Usage
+
+For advanced configuration, please refer to the detailed module documentation:
 
 - **[`datasets/README.md`](datasets/README.md)** - Dataset structure and data formats
 - **[`noise_generation/README.md`](noise_generation/README.md)** - Noise passage generation guide
 - **[`inference/README.md`](inference/README.md)** - Model inference and evaluation guide
 
-## Key Features
+### Supported Tasks
+
+The inference module supports five main task types:
+
+- **ckpt_test** - Checkpoint testing with passage labeling
+- **base_without_rules** - Baseline inference without specific rules
+- **base_pure** - Pure baseline inference
+- **base_sample** - Baseline inference with step-by-step reasoning for training data generation
+- **rag_test** - RAG testing with different fact sources and prompt types
 
 ### Noise Types
 
-The noise generation module supports four types of synthetic noise:
+The noise generation module supports four types of synthetic passage:
 
 1. **Counterfactual** - Passages that contradict the answer while remaining relevant
 2. **Relevant** - Passages that share topics but lack sufficient information
 3. **Irrelevant** - Passages with no semantic connection to the question
 4. **Consistent** - Passages that support the ground truth answer
-
-### Evaluation Metrics
-
-The evaluation module computes:
-
-- **Accuracy** - Answer correctness
-- **ECE (Expected Calibration Error)** - Calibration quality
-- **AUROC/AUPRC** - Ranking quality of confidence scores
-- **Label Accuracy** - Passage label correctness (for ckpt_test)
-- **Reliability Diagrams** - Calibration visualization
 
 ### Prompt Types
 
@@ -208,30 +218,17 @@ For RAG testing, the module supports different prompting strategies:
 - **cot (Chain-of-Thought)** - Step-by-step reasoning
 - **multi-step** - Multi-step reasoning with per-step confidence
 
-## Configuration
+### Evaluation Metrics
 
-### Model Serving
+The evaluation module computes:
 
-For inference, start model servers using vLLM:
+- **Accuracy** - Answer correctness
+- **ECE (Expected Calibration Error)** - Calibration quality
+- **AUROC** - Ranking quality of confidence scores
+- **Label Accuracy** - Passage label correctness (for ckpt_test)
+- **Reliability Diagrams** - Calibration visualization
 
-```bash
-# Example: Serve a model on port 10000
-vllm serve Qwen/Qwen2.5-7B-Instruct --port 10000
-vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-7B --port 10001
-```
-
-### API Configuration
-
-For noise generation, set API credentials:
-
-```bash
-export OPENAI_API_KEY="your-api-key"
-export OPENAI_BASE_URL="your-api-base-url"
-```
-
-Or modify `noise_generation/inference.py` directly.
-
-## Data Formats
+## 📄 Data Formats
 
 ### Input Format
 
@@ -270,14 +267,18 @@ Model inference outputs add `response` fields:
 }
 ```
 
-## Notes
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit Issues and Pull Requests.
+
+## 📝 Notes
 
 - **Root Directory**: All paths in this codebase are relative to the `NAACL/` directory
 - **Model Servers**: Ensure model servers are running before inference
 - **API Limits**: Adjust `max_concurrent_tasks` based on your API rate limits
 - **Extractor Detection**: The evaluation script automatically detects extractors from paths
 
-## Citation
+## 📚 Citing this work
 
 If you use this codebase in your research, please cite:
 
@@ -293,7 +294,7 @@ If you use this codebase in your research, please cite:
 }
 ```
 
-## License
+## 📄 License
 
 MIT
 
