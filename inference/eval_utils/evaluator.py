@@ -12,22 +12,20 @@ import os
 
 
 class Evaluator:
-    def __init__(self, metrics, judge_func, decimal_places=3, adaptive_ece=False, model_name=None, extractor_name=None, original_data_path=None, has_confidence=True, has_labels=False, separate_ece=False):
+    def __init__(self, metrics, judge_func, model_name=None, extractor_name=None, original_data_path=None, has_confidence=True, has_labels=False):
         self.metrics = metrics # 'accuracy', 'ece', 'auroc' ...
         self.judge_func = judge_func  # Function to judge the correctness of answers
-        self.decimal_places = decimal_places  # Number of decimal places to round to for all metrics
-        self.adaptive_ece = adaptive_ece  # Whether to use adaptive binning for ECE computation
+        self.decimal_places = 3
         self.model_name = model_name
         self.extractor_name = extractor_name  # Extractor name to differentiate tasks
         self.original_data_path = original_data_path  # Path to original data for label evaluation
         self.passage_type_map = None  # Will be populated if extractor_name is "ckpt_test" (has_labels=True)
         self.has_confidence = has_confidence
         self.has_labels = has_labels
-        self.separate_ece = separate_ece
 
     def evaluate(self, data):
         # Load original data if needed for label evaluation
-        if (self.has_labels or self.separate_ece) and self.original_data_path:
+        if self.has_labels and self.original_data_path:
             self._load_passage_type_map()
         
         # ensure all item has 'answer', 'confidence', 'true answer' keys
@@ -77,7 +75,7 @@ class Evaluator:
         elif metric == "label_accuracy":
             return self.round_float_result(self.compute_label_accuracy(data))
         elif metric == 'ece':
-            return self.round_float_result(self.compute_ece(data, adaptive=self.adaptive_ece))
+            return self.round_float_result(self.compute_ece(data))
         elif metric == 'auroc':
             return self.round_float_result(self.compute_auroc(data))
         elif metric == 'auprc':
@@ -90,10 +88,6 @@ class Evaluator:
             return self.round_float_result(self.compute_ave_conf(data))
         elif metric == "reliability_diagram":
             return self.compute_reliability_diagram(data)
-        elif metric == "ece_by_group":
-            return self.compute_ece_by_group(data)
-        elif metric == "accuracy_by_group":
-            return self.compute_accuracy_by_group(data)
         else:
             raise ValueError(f"Unknown metric: {metric}")
     def compute_reliability_diagram(self, data):
@@ -264,32 +258,12 @@ class Evaluator:
 
         return samples, invalid_samples
 
-    def _compute_ece_from_samples(self, samples, num_bins=10, adaptive=False):
+    def _compute_ece_from_samples(self, samples, num_bins=10):
         if not samples:
             return float('nan')
 
-        # Sort samples by confidence
         samples = sorted(samples, key=lambda x: x["confidence"])
-
-        if adaptive:
-            confidences = [s["confidence"] for s in samples]
-            quantiles = np.linspace(0, 100, num_bins + 1)
-            bin_edges = np.percentile(confidences, quantiles)
-            unique_edges = []
-            prev_edge = -1
-            for edge in bin_edges:
-                if edge > prev_edge:
-                    unique_edges.append(edge)
-                    prev_edge = edge
-            if len(unique_edges) < 2:
-                min_conf = min(confidences)
-                max_conf = max(confidences)
-                bin_edges = [min_conf, max_conf]
-            else:
-                bin_edges = unique_edges
-            bin_edges = np.array(bin_edges)
-        else:
-            bin_edges = np.linspace(0.0, 1.0, num_bins + 1)
+        bin_edges = np.linspace(0.0, 1.0, num_bins + 1)
 
         bin_weights = np.zeros(len(bin_edges) - 1)
         bin_confidences = np.zeros(len(bin_edges) - 1)
@@ -314,9 +288,9 @@ class Evaluator:
 
         return ece
 
-    def compute_ece(self, data, num_bins=10, adaptive=False):
+    def compute_ece(self, data, num_bins=10):
         """
-        Compute Expected Calibration Error (ECE) for the given data.
+        Compute Expected Calibration Error (ECE) for the given data using 10-bin fixed binning.
         """
         samples, invalid_samples = self._prepare_ece_samples(data)
         if invalid_samples > 0:
@@ -327,114 +301,7 @@ class Evaluator:
             return 0.0
 
         print(f"Collected {len(samples)} valid samples out of {len(data)} for ECE computation.")
-        return self._compute_ece_from_samples(samples, num_bins=num_bins, adaptive=adaptive)
-
-    def _determine_passage_group(self, passage_types):
-        if not passage_types:
-            return None
-
-        normalized = [p.lower() if isinstance(p, str) else "" for p in passage_types]
-        has_counterfactual = any(t == 'counterfactual' for t in normalized)
-        has_gt = any(t == 'gt_passage' for t in normalized)
-        has_consistent = any(t == 'consistent' for t in normalized)
-        only_rel_or_irrel = all(t in ['relevant', 'irrelevant'] for t in normalized)
-
-        if has_counterfactual:
-            return "counterfactual"
-        # Treat either GT passages or consistent passages as part of the "consistent" bucket.
-        if has_consistent or has_gt:
-            return "consistent"
-        if only_rel_or_irrel:
-            return "relevant_irrelevant"
-        return None
-
-    def compute_ece_by_group(self, data):
-        """
-        Compute ECE separately for counterfactual / consistent / relevant&irrelevant groups.
-        Returns a dict mapping group name to ECE (float) or None if group missing.
-        """
-        if not self.separate_ece:
-            return {}
-        if self.passage_type_map is None:
-            print("Warning: Cannot compute separate ECE without original passage metadata.")
-            return {}
-
-        samples, invalid_samples = self._prepare_ece_samples(data)
-        if not samples:
-            return {}
-
-        groups = {
-            "counterfactual": [],
-            "consistent": [],
-            "relevant_irrelevant": []
-        }
-
-        skipped_without_group = 0
-        for sample in samples:
-            item_id = sample.get("id")
-            passage_types = self.passage_type_map.get(item_id)
-            group = self._determine_passage_group(passage_types) if passage_types else None
-            if group is None:
-                skipped_without_group += 1
-                continue
-            groups[group].append(sample)
-
-        if skipped_without_group > 0:
-            print(f"Warning: {skipped_without_group} samples lacked group assignment for separate ECE.")
-
-        results = {}
-        for group_name, group_samples in groups.items():
-            if group_samples:
-                ece_value = self._compute_ece_from_samples(group_samples, adaptive=self.adaptive_ece)
-                results[group_name] = self.round_float_result(ece_value)
-            else:
-                results[group_name] = None
-
-        return results
-
-    def compute_accuracy_by_group(self, data):
-        """
-        Compute accuracy separately for counterfactual / consistent / relevant&irrelevant groups.
-        Returns dict mapping group name to accuracy (float) or None if group missing.
-        """
-        if not self.separate_ece:
-            return {}
-        if self.passage_type_map is None:
-            print("Warning: Cannot compute separate accuracy without original passage metadata.")
-            return {}
-
-        groups = {
-            "counterfactual": {"correct": 0, "total": 0},
-            "consistent": {"correct": 0, "total": 0},
-            "relevant_irrelevant": {"correct": 0, "total": 0}
-        }
-
-        for item in data:
-            item_id = item.get("id")
-            if item_id not in self.passage_type_map:
-                continue
-            group = self._determine_passage_group(self.passage_type_map.get(item_id))
-            if group is None:
-                continue
-
-            pred = item.get('answer')
-            truth = item.get('true_answer')
-            if pred is None or truth is None:
-                continue
-
-            if self.judge_func(pred, truth):
-                groups[group]["correct"] += 1
-            groups[group]["total"] += 1
-
-        results = {}
-        for group_name, counts in groups.items():
-            if counts["total"] > 0:
-                accuracy = counts["correct"] / counts["total"]
-                results[group_name] = self.round_float_result(accuracy)
-            else:
-                results[group_name] = None
-
-        return results
+        return self._compute_ece_from_samples(samples, num_bins=num_bins)
 
     def compute_auroc(self, data):
         """
@@ -796,7 +663,7 @@ def _detect_data_features(extracted_data):
     return has_confidence, has_labels
 
 
-def evaluate_file(input_path, output_path, decimal_places=3, adaptive_ece=False, extractor_name=None, original_data_dir=None, separate_ece=False):
+def evaluate_file(input_path, output_path, extractor_name=None, original_data_dir=None):
     with open(input_path, 'r') as f:
         extracted_data = json.load(f)
     
@@ -812,33 +679,26 @@ def evaluate_file(input_path, output_path, decimal_places=3, adaptive_ece=False,
         metrics.append('label_extraction_portion')
     if has_confidence:
         metrics.append('reliability_diagram')
-        if separate_ece:
-            metrics.append('ece_by_group')
-            metrics.append('accuracy_by_group')
     
-    # Find original data file if needed
+    # Find original data file if needed for label evaluation
     original_data_path = None
-    needs_original = (has_labels or (separate_ece and has_confidence))
-    if needs_original and original_data_dir:
+    if has_labels and original_data_dir:
         filename = os.path.basename(input_path)
         original_data_path = os.path.join(original_data_dir, filename)
         if not os.path.exists(original_data_path):
             print(f"Warning: Original data file not found: {original_data_path}")
             original_data_path = None
-    elif needs_original and not original_data_dir:
-        print("Warning: Original data directory required for labels or separate ECE, but not provided.")
+    elif has_labels and not original_data_dir:
+        print("Warning: Original data directory required for label evaluation, but not provided.")
     
     evaluator = Evaluator(
         metrics=metrics,
-        judge_func=f1_judge,  # Use f1_judge for evaluation
-        decimal_places=decimal_places,
-        adaptive_ece=adaptive_ece,
+        judge_func=f1_judge,
         model_name=input_path.split('/')[-1].replace('.json', '').split("_")[-1],
         extractor_name=extractor_name,
         original_data_path=original_data_path,
         has_confidence=has_confidence,
         has_labels=has_labels,
-        separate_ece=separate_ece and has_confidence and original_data_path is not None
     )
 
     results = evaluator.evaluate(extracted_data)
@@ -850,137 +710,16 @@ def evaluate_file(input_path, output_path, decimal_places=3, adaptive_ece=False,
         evaluator.save_label_confusion_matrix(extracted_data, confusion_png_path)
 
 
-def merge_datasets_for_model(model_name, datasets, input_dir="output_data/QA_extracted"):
-    """
-    Merge data from multiple datasets for a single model by combining same tasks across datasets.
-    
-    Args:
-        model_name: Name of the model
-        datasets: List of dataset names
-        input_dir: Directory containing the extracted data files
-    
-    Returns:
-        Merged data dictionary where each task contains combined data from all datasets
-    """
-    # First, collect all data from different datasets
-    dataset_data = {}
-    
-    for dataset in datasets:
-        input_path = f"{input_dir}/{dataset}_{model_name}.json"
-        try:
-            with open(input_path, 'r') as f:
-                data = json.load(f)
-                dataset_data[dataset] = data
-                
-        except FileNotFoundError:
-            print(f"Warning: File not found: {input_path}")
-            continue
-        except json.JSONDecodeError:
-            print(f"Warning: Invalid JSON in file: {input_path}")
-            continue
-    
-    if not dataset_data:
-        return {}
-    
-    # Find all unique task names across datasets
-    all_tasks = set()
-    for dataset, data in dataset_data.items():
-        for task in data.keys():
-            if task != 'unmatched_samples':
-                all_tasks.add(task)
-    
-    # Merge same tasks across datasets
-    merged_data = {}
-    
-    for task in all_tasks:
-        merged_task_data = []
-        
-        # Collect data for this task from all datasets
-        for dataset in datasets:
-            if dataset in dataset_data and task in dataset_data[dataset]:
-                task_data = dataset_data[dataset][task]
-                if isinstance(task_data, list):
-                    merged_task_data.extend(task_data)
-                else:
-                    print(f"Warning: Task {task} in dataset {dataset} is not a list")
-        
-        if merged_task_data:
-            merged_data[task] = merged_task_data
-            print(f"Merged task '{task}': {len(merged_task_data)} samples from {len([d for d in datasets if d in dataset_data and task in dataset_data[d]])} datasets")
-    
-    return merged_data
-
-
-def evaluate_merged_datasets(model_names, datasets, decimal_places=3, 
-                           input_dir="output_data/QA_extracted", 
-                           output_dir="output_data/QA_merged_dataset",
-                           adaptive_ece=False):
-    """
-    Evaluate models with merged datasets.
-    
-    Args:
-        model_names: List of model names
-        datasets: List of dataset names to merge
-        decimal_places: Number of decimal places for rounding
-        input_dir: Directory containing extracted data
-        output_dir: Directory to save merged evaluation results
-        adaptive_ece: Whether to use adaptive binning for ECE computation
-    """
-    import os
-    
-    # Create output directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
-    
-    evaluator = Evaluator(
-        metrics=['accuracy', 'ave_conf', 'ece', 'auroc', 'auprc', 'valid_sample_portion', 'reliability_diagram'],
-        judge_func=f1_judge,
-        decimal_places=decimal_places,
-        adaptive_ece=adaptive_ece
-    )
-    
-    for model_name in model_names:
-        print(f"Processing merged datasets for model: {model_name}")
-        
-        # Merge datasets for this model
-        merged_data = merge_datasets_for_model(model_name, datasets, input_dir)
-        
-        if not merged_data:
-            print(f"Warning: No data found for model {model_name}")
-            continue
-            
-        # Evaluate merged data
-        results = evaluator.evaluate(merged_data)
-        
-        # Save results
-        output_path = f"{output_dir}/{model_name}_merged.json"
-        with open(output_path, 'w') as f:
-            json.dump(results, f, indent=2)
-            
-        print(f"Saved merged evaluation results to: {output_path}")
-    
-    print("Merged dataset evaluation completed.")
-
-
 if __name__ == "__main__":
     import sys
     import argparse
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Evaluate model outputs for QA tasks')
-    parser.add_argument('--merge', dest='merge_dataset', action='store_true', default=False,
-                        help='Enable dataset merging (default: disabled)')
-    parser.add_argument('--adaptive-ece', dest='adaptive_ece', action='store_true', default=False,
-                        help='Use adaptive binning for ECE computation (default: disabled)')
-    parser.add_argument('--separate-ece', dest='separate_ece', action='store_true', default=False,
-                        help='Compute separate ECE per passage group (requires original data directory).')
     parser.add_argument('--input-dir', type=str, default='output_data/QA_extracted',
                         help='Directory containing extracted data files (default: output_data/QA_extracted)')
     parser.add_argument('--output-dir', type=str, default='output_data/QA_evaluation',
                         help='Directory to save evaluation results (default: output_data/QA_evaluation)')
-    parser.add_argument('--merged-output-dir', type=str, default='output_data/QA_merged_dataset',
-                        help='Directory to save merged evaluation results (default: output_data/QA_merged_dataset)')
-    parser.add_argument('--decimal-places', type=int, default=3,
-                        help='Number of decimal places for rounding results (default: 3)')
     parser.add_argument('--model-filter', nargs="+", default=None,
                        help='Filter files by base model name(s). Only process files containing these model names.')
     parser.add_argument('--mode', type=str, default='overwrite', choices=['add', 'overwrite'],
@@ -991,111 +730,57 @@ if __name__ == "__main__":
                        help="Directory containing original data files (required for ckpt_test extractor when has_labels=True).")
     
     args = parser.parse_args()
-    
-    # Configuration from command line arguments
-    merge_dataset = args.merge_dataset
-    adaptive_ece = args.adaptive_ece
-    separate_ece = args.separate_ece
+
     input_dir = args.input_dir
     output_dir = args.output_dir
-    merged_output_dir = args.merged_output_dir
-    decimal_places = args.decimal_places
+
+    input_paths = []
+    output_paths = []
+
+    all_files = [file for file in os.listdir(args.input_dir) if file.endswith(".json")]
     
-    datasets = ["noiserbench"]
-    model_names = [
-        "Qwen2.5-7B-Instruct",
-        "Qwen2.5-7B-Instruct-lora-sft-noexp-checkpoint-100",
-        "Qwen2.5-7B-Instruct-lora-sft-noexp-checkpoint-200",
-        "Qwen2.5-7B-Instruct-lora-sft-noexp-checkpoint-300",
-        "Qwen2.5-7B-Instruct-lora-sft-noexp-checkpoint-400",
-        "Qwen2.5-7B-Instruct-lora-sft-noexp-checkpoint-500",
-        "Qwen2.5-7B-Instruct-lora-sft-vanilla-checkpoint-100",
-        "Qwen2.5-7B-Instruct-lora-sft-vanilla-checkpoint-200",
-        "Qwen2.5-7B-Instruct-lora-sft-vanilla-checkpoint-300",
-        "Qwen2.5-7B-Instruct-lora-sft-vanilla-checkpoint-400",
-        "Qwen2.5-7B-Instruct-lora-sft-vanilla-checkpoint-500"
-    ]
+    if args.model_filter:
+        filtered_files = []
+        for file in all_files:
+            for model_name in args.model_filter:
+                if model_name in file:
+                    filtered_files.append(file)
+                    break
+        all_files = filtered_files
+        print(f"Filtered to {len(all_files)} files matching model filter(s)")
     
-    if merge_dataset:
-        print("Starting merged dataset evaluation process...")
-        print("=" * 80)
-        print(f"Using input directory: {input_dir}")
-        print(f"Using merged output directory: {merged_output_dir}")
-        print(f"Mode: {args.mode}")
-        
-        evaluate_merged_datasets(
-            model_names=model_names,
-            datasets=datasets,
-            decimal_places=decimal_places,
-            input_dir=input_dir,
-            output_dir=merged_output_dir,
-            adaptive_ece=adaptive_ece
-        )
-        
-        print("=" * 80)
-        print("Merged dataset evaluation process completed.")
-    
-    else:
-        # Original evaluation process
-        input_paths = []
-        output_paths = []
+    input_paths = [os.path.join(args.input_dir, file) for file in all_files]
+    output_paths = [os.path.join(output_dir, os.path.basename(file)) for file in input_paths]
 
-        # Get all json files under input path
-        # use os.listdir to get all files
-        all_files = [file for file in os.listdir(args.input_dir) if file.endswith(".json")]
-        
-        # Filter by model name if specified
-        if args.model_filter:
-            filtered_files = []
-            for file in all_files:
-                # Check if filename contains any of the specified model names
-                for model_name in args.model_filter:
-                    if model_name in file:
-                        filtered_files.append(file)
-                        break
-            all_files = filtered_files
-            print(f"Filtered to {len(all_files)} files matching model filter(s)")
-        
-        input_paths = [os.path.join(args.input_dir, file) for file in all_files]
-        output_paths = [os.path.join(output_dir, os.path.basename(file)) for file in input_paths]
-
-        # Filter out existing files if mode is "add"
-        if args.mode == "add":
-            filtered_pairs = []
-            skipped_count = 0
-            for input_path, output_path in zip(input_paths, output_paths):
-                if os.path.exists(output_path):
-                    print(f"Skipping {os.path.basename(input_path)} (already exists in output directory)")
-                    skipped_count += 1
-                else:
-                    filtered_pairs.append((input_path, output_path))
-            input_paths = [pair[0] for pair in filtered_pairs]
-            output_paths = [pair[1] for pair in filtered_pairs]
-            print(f"Skipped {skipped_count} existing files. Processing {len(input_paths)} new files.")
-            print("-" * 80)
-            
-        # for dataset in datasets:
-        #     for model in model_names:
-        #         input_paths.append(f"{input_dir}/{dataset}_{model}.json")
-        #         output_paths.append(f"{output_dir}/{dataset}_{model}.json")
-
-        print("Starting individual dataset evaluation process...")
-        print("=" * 80)
-        print(f"Using input directory: {input_dir}")
-        print(f"Using output directory: {output_dir}")
-        print(f"Mode: {args.mode}")
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-
+    if args.mode == "add":
+        filtered_pairs = []
+        skipped_count = 0
         for input_path, output_path in zip(input_paths, output_paths):
-            print(f"Processing {input_path} to {output_path}...")
-            evaluate_file(input_path, output_path, decimal_places, adaptive_ece, 
-                         extractor_name=args.extractor, original_data_dir=args.original_data_dir, separate_ece=separate_ece)
-            print(f"Finished processing {input_path}. Results saved to {output_path}.")
-            print("-" * 80)
-        
-        print("Individual dataset evaluation process completed.")
-        print("=" * 80)
+            if os.path.exists(output_path):
+                print(f"Skipping {os.path.basename(input_path)} (already exists in output directory)")
+                skipped_count += 1
+            else:
+                filtered_pairs.append((input_path, output_path))
+        input_paths = [pair[0] for pair in filtered_pairs]
+        output_paths = [pair[1] for pair in filtered_pairs]
+        print(f"Skipped {skipped_count} existing files. Processing {len(input_paths)} new files.")
+        print("-" * 80)
+
+    print("Starting evaluation process...")
+    print("=" * 80)
+    print(f"Using input directory: {input_dir}")
+    print(f"Using output directory: {output_dir}")
+    print(f"Mode: {args.mode}")
+    
+    os.makedirs(output_dir, exist_ok=True)
+
+    for input_path, output_path in zip(input_paths, output_paths):
+        print(f"Processing {input_path} to {output_path}...")
+        evaluate_file(input_path, output_path, extractor_name=args.extractor, original_data_dir=args.original_data_dir)
+        print(f"Finished processing {input_path}. Results saved to {output_path}.")
+        print("-" * 80)
+    
+    print("Evaluation process completed.")
+    print("=" * 80)
 
 
