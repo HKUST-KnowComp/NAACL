@@ -39,7 +39,7 @@ LOG_PATH="inference/logs/ckpt-noexp_serve"
 # ---------------------------------------------------------------------------
 # TODO: Update this path according to your checkpoint location
 # ---------------------------------------------------------------------------
-CHECKPOINT_PATH=""  # PLACEHOLDER: Replace with actual checkpoint path, e.g., "/path/to/LLaMA-Factory/models_noexp"
+CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"
 
 export VLLM_CONFIGURE_LOGGING=0
 
@@ -53,7 +53,7 @@ echo "Checkpoint path: $CHECKPOINT_PATH"
 echo "---"
 
 if [ -z "$CHECKPOINT_PATH" ]; then
-    echo "ERROR: CHECKPOINT_PATH is not set. Please update ckpt-noexp_serve.sh with the actual checkpoint path."
+    echo "ERROR: Set CHECKPOINT_PATH to the directory containing your LoRA model folders."
     exit 1
 fi
 

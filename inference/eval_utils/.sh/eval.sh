@@ -8,13 +8,16 @@
 #   --mode <mode>              Processing mode: 'add' or 'overwrite' (default: overwrite)
 #   --output-base <path>       Base directory for output (default: auto-generated from input_path)
 #   --original-data-dir <path> Directory containing original data files (required for ckpt_test)
-#   --separate-ece             Enable separate ECE computation
 #   --extractor <name>         Override auto-detected extractor (optional)
 #
 # Examples:
 #   bash eval_utils/.sh/eval.sh output/12-01-17_base_without_rules
 #   bash eval_utils/.sh/eval.sh output/12-17-22-06_ckpt_test --original-data-dir output
 #   bash eval_utils/.sh/eval.sh output/rag_test_data --extractor rag_test
+
+set -euo pipefail
+
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -73,7 +76,6 @@ process_data() {
     local mode="${3:-overwrite}"
     local output_base="${4:-}"
     local original_data_dir="${5:-}"
-    local separate_ece="${6:-false}"
     
     # Determine output directories
     if [ -z "$output_base" ]; then
@@ -101,37 +103,26 @@ process_data() {
     
     # Step 1: Extract
     echo "Running extractor..."
-    local extract_cmd="python $EXTRACTOR_SCRIPT --extractor $extractor --mode $mode --input_path \"$input_path\" --output_path \"$extracted_dir\""
-    echo "Command: $extract_cmd"
-    eval $extract_cmd
-    
-    if [ $? -ne 0 ]; then
-        echo "Error: Extraction failed!"
-        return 1
-    fi
+    local extract_cmd=("$PYTHON_BIN" "$EXTRACTOR_SCRIPT" --extractor "$extractor" --mode "$mode" --input_path "$input_path" --output_path "$extracted_dir")
+    printf 'Command:'
+    printf ' %q' "${extract_cmd[@]}"
+    printf '\n'
+    "${extract_cmd[@]}"
     
     # Step 2: Evaluate
     echo ""
     echo "Running evaluator..."
-    local eval_cmd="python $EVALUATOR_SCRIPT --mode $mode --input-dir \"$extracted_dir\" --output-dir \"$evaluated_dir\" --extractor $extractor"
+    local eval_cmd=("$PYTHON_BIN" "$EVALUATOR_SCRIPT" --mode "$mode" --input-dir "$extracted_dir" --output-dir "$evaluated_dir" --extractor "$extractor")
     
     # Add original-data-dir if provided (required for ckpt_test with labels)
     if [ -n "$original_data_dir" ]; then
-        eval_cmd="$eval_cmd --original-data-dir \"$original_data_dir\""
+        eval_cmd+=(--original-data-dir "$original_data_dir")
     fi
-    
-    # Add separate-ece flag if requested
-    if [ "$separate_ece" == "true" ]; then
-        eval_cmd="$eval_cmd --separate-ece"
-    fi
-    
-    echo "Command: $eval_cmd"
-    eval $eval_cmd
-    
-    if [ $? -ne 0 ]; then
-        echo "Error: Evaluation failed!"
-        return 1
-    fi
+
+    printf 'Command:'
+    printf ' %q' "${eval_cmd[@]}"
+    printf '\n'
+    "${eval_cmd[@]}"
     
     echo ""
     echo "=========================================="
@@ -151,7 +142,6 @@ main() {
         echo "  --mode <mode>              Processing mode: 'add' or 'overwrite' (default: overwrite)"
         echo "  --output-base <path>       Base directory for output (default: auto-generated)"
         echo "  --original-data-dir <path> Directory containing original data files (for ckpt_test)"
-        echo "  --separate-ece             Enable separate ECE computation"
         echo "  --extractor <name>         Override auto-detected extractor"
         echo ""
         echo "Examples:"
@@ -168,7 +158,6 @@ main() {
     local mode="overwrite"
     local output_base=""
     local original_data_dir=""
-    local separate_ece="false"
     local extractor_override=""
     
     # Parse options
@@ -185,10 +174,6 @@ main() {
             --original-data-dir)
                 original_data_dir="$2"
                 shift 2
-                ;;
-            --separate-ece)
-                separate_ece="true"
-                shift
                 ;;
             --extractor)
                 extractor_override="$2"
@@ -216,7 +201,7 @@ main() {
     fi
     
     # Process the data
-    process_data "$input_path" "$extractor" "$mode" "$output_base" "$original_data_dir" "$separate_ece"
+    process_data "$input_path" "$extractor" "$mode" "$output_base" "$original_data_dir"
 }
 
 # If script is being run directly, execute main function

@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Usage:
-#   bash baseline_test/generator/.sh/ckpt-noexp_test.sh
+#   bash inference/generator/.sh/ckpt-noexp_test.sh
 # Before running, make sure `ckpt-noexp_serve.sh` (with the same MODEL_TO_RUN /
 # CHECKPOINTS / PORTS settings) is already serving the LoRA checkpoints.
 
 set -euo pipefail
 
-cd /project/jiayujeff/noise_confidence/baseline_test
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 # ---------------------------------------------------------------------------
 # Model / checkpoint configuration (keep in sync with ckpt-noexp_serve.sh)
@@ -40,18 +41,20 @@ PORTS=(37000 37001 37002 37003 37004 37005) #
 # ---------------------------------------------------------------------------
 # Inference configuration
 # ---------------------------------------------------------------------------
-INPUT_FILE="../datasets3/strategyqa/test2.json"
-DATASET="strategyqa-test"
+DATASET_NAME="strategyqa"
+DATASET_SPLIT="test"
+PASSAGE_COUNT="threePassages"
+INPUT_FILE="datasets/prepared/${PASSAGE_COUNT}/${DATASET_NAME}/${DATASET_SPLIT}.json"
+DATASET="${DATASET_NAME}-${DATASET_SPLIT}"
 QUESTION_TYPE="oe"
 TASK="ckpt_test"
 SAMPLE_NUM=1
 TEMPERATURE=0.0
 
 # Output layout
-OUTPUT_ROOT="../filter-test_12-17/output"
+OUTPUT_ROOT="inference/output_data/ckpt-noexp_test"
 TS="$(date +"%m-%d-%H-%M")"
-TS="12-25-01-12"
-RUN_TAG="${TS}_noexp-models_ckpt-test-without-format"
+RUN_TAG="${TS}_noexp-models"
 OUTPUT_DIR="${OUTPUT_ROOT}/${RUN_TAG}"
 mkdir -p "$OUTPUT_DIR"
 
@@ -79,7 +82,7 @@ for idx in "${!CHECKPOINTS[@]}"; do
 
     mkdir -p "$(dirname "$output_file")"
 
-    python generator/budget_forcing.py \
+    python3 inference/generator/budget_forcing.py \
         --input_file "$INPUT_FILE" \
         --dataset "$DATASET" \
         --output_file "$output_file" \
@@ -100,5 +103,6 @@ for idx in "${!CHECKPOINTS[@]}"; do
     echo "---"
 done
 
-echo "All ckpt_test jobs launched! Outputs will accumulate under: $OUTPUT_DIR"
-
+echo "Waiting for all ckpt_test jobs to finish..."
+wait
+echo "All ckpt_test jobs completed. Outputs are under: $OUTPUT_DIR"

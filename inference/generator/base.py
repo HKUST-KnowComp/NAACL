@@ -1,15 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, List, Tuple
-from PIL import Image
-import base64
-from io import BytesIO
+from typing import Optional, Any, List, Tuple
 from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from concurrent.futures import ProcessPoolExecutor
 import logging
-from pathlib import Path
 from tqdm import tqdm
-from transformers import AutoTokenizer
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -27,31 +21,31 @@ url_dic = {
     },
     "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B": {
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:31000/v1",
+        "base_url": "http://127.0.0.1:31000/v1",
     },
     "deepseek-ai/DeepSeek-R1-Distill-Llama-8B": {
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:31001/v1",
+        "base_url": "http://127.0.0.1:31001/v1",
     },
     "meta-llama/Llama-3.1-8B-Instruct": {
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:40001/v1",
+        "base_url": "http://127.0.0.1:40001/v1",
     },
     "Qwen/Qwen2.5-7B-Instruct": {
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:40002/v1",
+        "base_url": "http://127.0.0.1:40002/v1",
     },
     "Qwen/Qwen3-8B": {
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:10002/v1",
+        "base_url": "http://127.0.0.1:10002/v1",
     },
     "Qwen/Qwen2.5-32B-Instruct": { # GPU 6,7
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:10005/v1",
+        "base_url": "http://127.0.0.1:10005/v1",
     },
     "Qwen/Qwen3-32B": { # GPU 6,7
         "api_key": "EMPTY",
-        "base_url": "http://0.0.0.0:10006/v1",
+        "base_url": "http://127.0.0.1:10006/v1",
     }
 }
 
@@ -61,7 +55,7 @@ class BaseGenerator(ABC):
         self.model = model_name
         self.client = OpenAI(
             api_key=url_dic[model_name]["api_key"] if model_name in url_dic else "EMPTY",
-            base_url=url_dic[model_name]["base_url"] if args.port == 0 else f"http://0.0.0.0:{args.port}/v1",
+            base_url=url_dic[model_name]["base_url"] if args.port == 0 else f"http://127.0.0.1:{args.port}/v1",
             timeout=3600,
         )
         self.batch_size = 256
@@ -118,9 +112,7 @@ class BaseGenerator(ABC):
         results = []
         future_to_idx = {}
         
-        # with ThreadPoolExecutor(max_workers=self.batch_size) as executor:
         with ThreadPoolExecutor(max_workers=self.batch_size) as executor:
-        # with ProcessPoolExecutor(max_workers=self.batch_size) as executor:
             # Submit all tasks to the executor
             for idx, (prompt, request_id) in enumerate(prompt_list):
                 future = executor.submit(self._generate_single, prompt, request_id)

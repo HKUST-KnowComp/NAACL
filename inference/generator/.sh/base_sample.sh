@@ -46,8 +46,8 @@ QUESTION_TYPE="oe"  # Auto-detected from item ID ('s' prefix = bi, others = oe)
 # Inference configuration
 # ---------------------------------------------------------------------------
 TASK="base_sample"
-SAMPLE_NUM=5  # Typically generate multiple samples for training data
-TEMPERATURE=0.7  # Higher temperature for diversity in training data
+SAMPLE_NUM=16  # Best-of-N sampling setting reported in the paper
+TEMPERATURE=1.0
 
 # ---------------------------------------------------------------------------
 # Output configuration
@@ -77,7 +77,7 @@ for idx in "${!BASE_MODELS[@]}"; do
 
     mkdir -p "$(dirname "$output_file")"
 
-    python inference/generator/budget_forcing.py \
+    python3 inference/generator/budget_forcing.py \
         --input_file "$INPUT_FILE" \
         --dataset "$DATASET" \
         --output_file "$output_file" \
@@ -99,13 +99,13 @@ for idx in "${!BASE_MODELS[@]}"; do
 done
 
 echo ""
-echo "All base_sample jobs launched! Outputs will accumulate under: $OUTPUT_DIR"
+echo "Waiting for all base_sample jobs to finish..."
+wait
+echo "All base_sample jobs completed. Outputs are under: $OUTPUT_DIR"
 echo ""
 echo "After completion, filter the results using:"
-echo "  python inference/process_utils/filter_rule.py \\"
+echo "  python3 inference/process_utils/filter_rule.py \\"
 echo "      --input $OUTPUT_DIR \\"
 echo "      --output ${OUTPUT_DIR}_filtered \\"
 echo "      --enable-drop 0.05 \\"
-echo "      --tolarate-mismatch"
-
-
+echo "      --tolerate-mismatch"

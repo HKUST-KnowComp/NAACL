@@ -37,7 +37,7 @@ PORTS=(40001 40002 40003 40004)
 DATASET_NAME="strategyqa"  # Options: strategyqa, hotpotqa, nq, bamboogle
 DATASET_SPLIT="test"  # Options: test, train
 # Note: For rag_test, input file should contain bm25-facts and Contriever-facts fields
-INPUT_FILE="datasets/rag/${DATASET_NAME}/${DATASET_SPLIT}.json"  # Adjust path as needed
+INPUT_FILE="${RAG_INPUT_FILE:-datasets/rag/${DATASET_NAME}/${DATASET_SPLIT}.json}"
 DATASET="${DATASET_NAME}"
 QUESTION_TYPE="oe"  # Auto-detected from item ID ('s' prefix = bi, others = oe)
 
@@ -68,6 +68,12 @@ TS="$(date +"%m-%d-%H-%M")"  # month-day-hour-minute
 OUTPUT_ROOT="inference/output_data/${TASK}"
 OUTPUT_DIR="${OUTPUT_ROOT}/${TS}"
 mkdir -p "$OUTPUT_DIR"
+
+if [[ ! -f "$INPUT_FILE" ]]; then
+    echo "RAG input not found: $INPUT_FILE" >&2
+    echo "Set RAG_INPUT_FILE to a JSON file containing bm25-facts and Contriever-facts." >&2
+    exit 1
+fi
 
 echo "=========================================="
 echo "Running RAG test inference"
@@ -107,7 +113,7 @@ run_model_tasks() {
             echo "  Output: $output_file"
             
             # Run inference using budget_forcing.py (SYNCHRONOUSLY)
-            python inference/generator/budget_forcing.py \
+            python3 inference/generator/budget_forcing.py \
                 --input_file "$INPUT_FILE" \
                 --dataset "$DATASET" \
                 --output_file "$output_file" \

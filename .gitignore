@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.venv/
+
+inference/eval_results/
+inference/logs/
+inference/output_data/

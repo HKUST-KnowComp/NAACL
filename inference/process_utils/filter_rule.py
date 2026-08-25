@@ -20,7 +20,6 @@ import json
 import math
 import random
 import re
-from datetime import datetime
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Sequence, Tuple, Optional, Any, Dict
@@ -77,7 +76,9 @@ def parse_args() -> argparse.Namespace:
         help="If set, drop the longest responses per prompt by this fraction (e.g., 0.05).",
     )
     parser.add_argument(
+        "--tolerate-mismatch",
         "--tolarate-mismatch",
+        dest="tolerate_mismatch",
         action="store_true",
         help="If set, tolerate at most one mismatch between Relevant and Irrelevant in passage classifications.",
     )
@@ -636,16 +637,12 @@ def process_file(input_path: Path, output_path: Path, drop_pct: float, tolerate_
     stats.after_format = stats.total_responses - stats.dropped_extraction
     # Step 2: Passage judgment filtering (after mismatch check)
     stats.after_passage_judgment = stats.after_format - stats.dropped_mismatch
-    # Step 3: Rule following filtering (step 4 check for non-distill models + drop length for all models)
-    # Drop length is included in rule following step
-    if require_think:
-        # Distill models don't need step 4 check, so rule following = passage judgment - drop length
-        stats.after_rule_following = stats.after_passage_judgment - stats.dropped_length
-    else:
-        # Non-distill models: estimate step 4 drops + drop length
-        # Step 4 check is mixed in dropped_extraction, so we estimate it
-        estimated_step4_drops = max(int(stats.after_passage_judgment * 0.06), 100)
-        stats.after_rule_following = stats.after_passage_judgment - estimated_step4_drops - stats.dropped_length
+    # Step/rule validation is included in extraction above; length filtering is
+    # the remaining rule-following reduction tracked at this stage.
+    stats.after_rule_following = max(
+        stats.after_passage_judgment - stats.dropped_length,
+        0,
+    )
     # Step 4: Confidence alignment (select 1 best response per question)
     # Alignment means: for each question, select the final response that minimizes Brier Score
     # So after alignment, each question has only 1 response, which equals the number of questions
@@ -799,14 +796,11 @@ def generate_latex_table(model_stats: Dict[str, FilterStats], output_path: Path)
 def main() -> None:
     args = parse_args()
     input_dir: Path = args.input.expanduser().resolve()
-    base_output_dir: Path = args.output.expanduser().resolve()
+    output_dir: Path = args.output.expanduser().resolve()
     
     if not input_dir.exists():
         raise FileNotFoundError(f"Input directory not found: {input_dir}")
 
-    # Create timestamped output directory
-    timestamp = datetime.now().strftime("%m-%d-%H-%M")
-    output_dir = base_output_dir.parent / f"{base_output_dir.name}_{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
     print(f"Output directory: {output_dir}")
 
@@ -821,7 +815,7 @@ def main() -> None:
             json_path,
             output_dir / json_path.name,
             drop_pct=drop_pct,
-            tolerate_mismatch=args.tolarate_mismatch,
+            tolerate_mismatch=args.tolerate_mismatch,
         )
         model_stats[model_name] = stats
 

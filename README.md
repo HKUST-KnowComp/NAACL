@@ -1,300 +1,179 @@
-# NAACL
+# NOVA
 
-📄 [arXiv](https://www.arxiv.org/abs/2601.11004) •🤗 [Hugging Face](https://huggingface.co/papers/2601.11004) •🐦 [X (Twitter)](https://x.com/jiayujeff/status/2013769332619104509?s=46)
+[Paper](https://arxiv.org/abs/2601.11004) | [Hugging Face paper page](https://huggingface.co/papers/2601.11004) | [X thread](https://x.com/jiayujeff/status/2013769332619104509)
 
-This is the official repository for the paper "**NAACL: Noise-AwAre Verbal Confidence Calibration for LLMs in RAG Systems**".
+Official code for **NOVA: NOise-aware Verbal Confidence CAlibration for Robust Large Language Models in RAG Systems**, accepted to **Findings of EMNLP 2026**. The repository URL retains its original `NAACL` name for compatibility.
 
-## 🎯 Project Overview
+NOVA studies verbal confidence under noisy retrieval and trains language models to explicitly judge passage utility before producing an answer and confidence score. The method uses about 2K filtered HotpotQA trajectories and improves calibration under both controlled retrieval noise and real retrievers.
 
-**NAACL** is a comprehensive framework for improving confidence calibration in large language models (LLMs) within retrieval-augmented generation (RAG) systems. The project addresses a critical challenge: LLMs exhibit poor calibration performance due to noisy retrieved contexts, where contradictory or irrelevant evidence tends to inflate false certainty, leading to severe overconfidence.
+![NOVA example](figures/figure1.png)
 
-The repository systematically evaluates noise robustness and confidence calibration across four benchmarks and provides:
+## What is included
 
-* **🔍 Systematic Noise Analysis**: Studies how different types of noise in retrieved passages affect model confidence calibration
-* **📋 NAACL Rules**: Principled foundation for resolving overconfidence under noise
-* **🎓 Supervised Fine-tuning**: Noise-aware calibration framework trained on ~2K HotpotQA examples
-* **⚖️ Comprehensive Evaluation**: Metrics including accuracy, ECE, AUROC/AUPRC, and calibration diagrams
+- Final 3/5-passage evaluation datasets for HotpotQA, StrategyQA, Natural Questions, and Bamboogle.
+- Synthetic counterfactual, relevant, irrelevant, and consistent passage generation.
+- Prompts and OpenAI-compatible inference for the four model backbones used in the paper.
+- Answer/confidence extraction and evaluation for accuracy, ECE, AUROC, AUPRC, passage-label accuracy, and reliability diagrams.
+- The multi-stage filtering and SFT formatting pipeline used to construct NOVA supervision.
+- LLaMA-Factory LoRA configurations matching the final paper settings.
 
-## ✨ Core Features
+For real-retriever evaluation, `rag_test` accepts a pre-retrieved JSON file with `bm25-facts` and `Contriever-facts` fields.
 
-* **📚 Multi-Dataset Support**: Evaluation across StrategyQA, HotpotQA, Natural Questions, and Bamboogle
-* **🔀 Noise Type Generation**: Four types of synthetic noise (counterfactual, relevant, irrelevant, consistent) for robustness testing
-* **🎯 Flexible Inference Tasks**: Multiple task types including baseline inference, checkpoint testing, and RAG evaluation
-* **📊 Comprehensive Metrics**: Accuracy, Expected Calibration Error (ECE), AUROC/AUPRC, label accuracy, and reliability diagrams
-* **🧠 Multiple Prompting Strategies**: Support for vanilla, chain-of-thought (CoT), and multi-step reasoning with per-step confidence
-* **🔄 Modular Design**: Organized into dataset management, noise generation, and inference & evaluation modules
+## Repository layout
 
-![Figure 1](figures/figure1.png)
-
-*Figure 1: An illustrative example of model responses before and after NAACL. By explicitly training the model to assess passage- and group-level utility prior to answering, NAACL enables more reliable confidence expression under noisy retrieval, as reflected by consistently reduced ECE. The performance plots report results on NQ for Llama-3.1-8B-Instruct and DeepSeek-R1-DistillLlama-8B, where SFT corresponds to the Label-only SFT setting in Table 2, and illustrate how NAACL promotes more transparent and grounded human–computer interaction in real-world scenarios.*
-
-## 📁 Directory Structure
-
-```
-NAACL/
-├── datasets/              # Dataset storage
-│   ├── original/         # Original QA datasets
-│   ├── prepared/         # Preprocessed datasets (3/5 passages per question)
-│   └── noise_generated/  # Generated noise passages
-├── noise_generation/     # Noise passage generation module
-│   ├── inference.py      # Main noise generation script
-│   ├── prompt_template.py # Prompt templates for noise types
-│   └── generate_noise.sh  # Batch generation script
-├── inference/            # Model inference and evaluation
-│   ├── generator/        # Model response generation
-│   │   ├── budget_forcing.py  # Main inference script
-│   │   ├── prompts.py    # Prompt templates
-│   │   └── .sh/          # Inference scripts
-│   └── eval_utils/       # Evaluation utilities
-│       ├── extractor.py  # Answer extraction
-│       ├── evaluator.py  # Performance evaluation
-│       └── .sh/          # Evaluation scripts
-└── rag/                  # RAG-related utilities
+```text
+.
+├── datasets/
+│   └── prepared/          # released 3- and 5-passage inputs
+├── noise_generation/      # Gemini/OpenAI-compatible noise generation
+├── inference/
+│   ├── generator/         # prompts, API client, and run scripts
+│   ├── eval_utils/        # extraction and calibration metrics
+│   └── process_utils/     # training-response filtering/SFT formatting
+├── training/              # LLaMA-Factory dataset map and LoRA configs
+└── tests/                 # offline smoke test
 ```
 
-## 🔄 Workflow
+## Installation
 
-The typical workflow consists of three main steps:
-
-```
-1. Prepare Data
-   └── datasets/original/ → datasets/prepared/
-
-2. Generate Noise (Optional)
-   └── datasets/original/ → datasets/noise_generated/
-
-3. Run Inference & Evaluation
-   └── datasets/prepared/ → inference → output/ → evaluation results
-```
-
-![Figure 3](figures/figure3.png)
-
-*Figure 3: Overview of the NAACL data pipeline with three stages: RAG Passage Construction, Training Response Generation, and Multi-stage Data Filtering. Specifically, In the Training Response Generation stage, the model takes a query q and a set of retrieved passages P (where k = 3) as input (denoted as Input: Q+3P). It then generates a reasoning trace containing passage-level and group-level judgments Jp, Jg (denoted as P Type), followed by the predicted answer aˆ (A) and the verbal confidence score cˆ (C). Finally, the pipeline produces 2K high-quality trajectories used for fine-tuning.*
-
-### Detailed Workflow
-
-1. **Data Preparation**: Start with original datasets in `datasets/original/`
-2. **Preprocessing**: Prepare datasets with 3 or 5 passages per question → `datasets/prepared/`
-3. **Noise Generation** (Optional): Generate synthetic noise passages → `datasets/noise_generated/`
-4. **Model Inference**: Generate model responses for QA tasks → `output/`
-5. **Answer Extraction**: Extract answers and confidence scores from responses → `output/extracted/`
-6. **Evaluation**: Compute metrics (accuracy, ECE, calibration, etc.) → `output/evaluated/`
-
-## 📊 Supported Datasets
-
-- **StrategyQA** - Binary yes/no questions requiring multi-hop reasoning
-- **HotpotQA** - Multi-hop question answering with supporting facts
-- **Natural Questions (NQ)** - Open-domain question answering
-- **Bamboogle** - Binary questions with Google search results
-
-## 🚀 Quick Start
-
-### Installation
+Python 3.12 and Linux are recommended for the full CUDA/vLLM environment.
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/NAACL.git
+git clone https://github.com/HKUST-KnowComp/NAACL.git
 cd NAACL
 
-# Install the package in editable mode
-pip install -e .
-
-# Or install dependencies only
-pip install -r requirements.txt
-
-# Or use conda environment
 conda env create -f environment.yml
-conda activate <env_name>
+conda activate nova
 ```
 
-### Environment Configuration
-
-1. **Local Model Deployment**  
-   Start model servers using vLLM for inference:
-   ```bash
-   vllm serve Qwen/Qwen2.5-7B-Instruct --port 10000
-   ```
-
-2. **API Configuration**  
-   For noise generation, set API credentials:
-   ```bash
-   export OPENAI_API_KEY="your-api-key"
-   export OPENAI_BASE_URL="your-api-base-url"
-   ```
-   Or modify `noise_generation/inference.py` directly.
-
-### Running Examples
-
-#### Generate Noise Passages (Optional)
-
-Generate synthetic noise passages for robustness testing:
+For data processing, API-based generation, and evaluation without a local vLLM server, a smaller environment is sufficient:
 
 ```bash
-# From NAACL/ directory
-bash noise_generation/generate_noise.sh
-
-# Or for a specific task:
-python noise_generation/inference.py \
-    --input_path datasets/original/strategyqa/test.json \
-    --output_path datasets/noise_generated/strategyqa/test.json \
-    --task gen_counterfactual \
-    --max_concurrent_tasks 10
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
 
-#### Run Model Inference
-
-Generate model responses for a QA task:
+Validate the installation without a model or network connection:
 
 ```bash
-# From NAACL/ directory
-# Example: base_without_rules task
-python inference/generator/budget_forcing.py \
-    --input_file datasets/prepared/threePassages/strategyqa/test.json \
-    --dataset strategyqa \
-    --output_file output/base_without_rules_output.json \
-    --task base_without_rules \
-    --prompt_type vanilla \
-    --question_type bi \
-    --sample_num 1 \
-    --model_name Qwen/Qwen2.5-7B-Instruct \
-    --temperature 0.0
+python3 tests/smoke_test.py
 ```
 
-#### Extract and Evaluate
+## Inference
 
-Extract answers and evaluate results:
+NOVA uses an OpenAI-compatible API. Start a vLLM server in one terminal:
 
 ```bash
-# From NAACL/ directory
-# Auto-detect extractor and run extraction + evaluation
-bash inference/eval_utils/.sh/eval.sh output/base_without_rules_output
-
-# Or manually:
-python inference/eval_utils/extractor.py \
-    --input_path output \
-    --output_path output/extracted \
-    --extractor base_without_rules \
-    --mode overwrite
-
-python inference/eval_utils/evaluator.py \
-    --input-dir output/extracted \
-    --output-dir output/evaluated \
-    --extractor base_without_rules \
-    --mode overwrite
+vllm serve Qwen/Qwen2.5-7B-Instruct --port 40002
 ```
 
-## 📖 Advanced Usage
+Run a small inference slice in another terminal:
 
-For advanced configuration, please refer to the detailed module documentation:
-
-- **[`datasets/README.md`](datasets/README.md)** - Dataset structure and data formats
-- **[`noise_generation/README.md`](noise_generation/README.md)** - Noise passage generation guide
-- **[`inference/README.md`](inference/README.md)** - Model inference and evaluation guide
-
-### Supported Tasks
-
-The inference module supports five main task types:
-
-- **ckpt_test** - Checkpoint testing with passage labeling
-- **base_without_rules** - Baseline inference without specific rules
-- **base_pure** - Pure baseline inference
-- **base_sample** - Baseline inference with step-by-step reasoning for training data generation
-- **rag_test** - RAG testing with different fact sources and prompt types
-
-### Noise Types
-
-The noise generation module supports four types of synthetic passage:
-
-1. **Counterfactual** - Passages that contradict the answer while remaining relevant
-2. **Relevant** - Passages that share topics but lack sufficient information
-3. **Irrelevant** - Passages with no semantic connection to the question
-4. **Consistent** - Passages that support the ground truth answer
-
-### Prompt Types
-
-For RAG testing, the module supports different prompting strategies:
-
-- **vanilla** - Standard prompt without reasoning
-- **cot (Chain-of-Thought)** - Step-by-step reasoning
-- **multi-step** - Multi-step reasoning with per-step confidence
-
-### Evaluation Metrics
-
-The evaluation module computes:
-
-- **Accuracy** - Answer correctness
-- **ECE (Expected Calibration Error)** - Calibration quality
-- **AUROC** - Ranking quality of confidence scores
-- **Label Accuracy** - Passage label correctness (for ckpt_test)
-- **Reliability Diagrams** - Calibration visualization
-
-## 📄 Data Formats
-
-### Input Format
-
-All datasets use JSON format with the following structure:
-
-```json
-[
-  {
-    "id": "sample_001",
-    "question": "What is the capital of France?",
-    "answer": "Paris",
-    "passages": [
-      {
-        "content": "...",
-        "type": "relevant"
-      }
-    ]
-  }
-]
+```bash
+python3 inference/generator/budget_forcing.py \
+  --input_file datasets/prepared/threePassages/strategyqa/test.json \
+  --dataset strategyqa-test \
+  --output_file inference/output_data/base_pure/quickstart/qwen.json \
+  --task base_pure \
+  --prompt_type vanilla \
+  --question_type bi \
+  --sample_num 1 \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
+  --temperature 0 \
+  --port 40002 \
+  --end_index 10
 ```
 
-### Output Format
+The scripts in `inference/generator/.sh/` reproduce the four-backbone runs. Edit their dataset/model selections as needed. `base_serve.sh` assumes four visible GPUs and serves one backbone per GPU.
 
-Model inference outputs add `response` fields:
+## Evaluation
 
-```json
-{
-  "id": "sample_001",
-  "question": "...",
-  "passages": [...],
-  "response": {
-    "task_name": {
-      "prompt_type": ["response1", "response2", ...]
-    }
-  }
-}
+The wrapper runs extraction followed by evaluation. The extractor can be set explicitly, which is recommended for custom output paths:
+
+```bash
+bash inference/eval_utils/.sh/eval.sh \
+  inference/output_data/base_pure/quickstart \
+  --extractor base_pure
 ```
 
-## 🤝 Contributing
+Results are written beside the input under `eval_results/<run>/extracted` and `eval_results/<run>/evaluated` unless `--output-base` is supplied. See [inference/README.md](inference/README.md) for task/output schemas.
 
-Contributions are welcome! Please feel free to submit Issues and Pull Requests.
+## Noise generation
 
-## 📝 Notes
+Set credentials for Gemini 2.5 Pro or another compatible endpoint:
 
-- **Root Directory**: All paths in this codebase are relative to the `NAACL/` directory
-- **Model Servers**: Ensure model servers are running before inference
-- **API Limits**: Adjust `max_concurrent_tasks` based on your API rate limits
-- **Extractor Detection**: The evaluation script automatically detects extractors from paths
+```bash
+export OPENAI_API_KEY="..."
+export OPENAI_BASE_URL="https://your-endpoint.example/v1"  # optional for OpenAI
+```
 
-## 📚 Citing this work
+Generate one noise type:
 
-If you use this codebase in your research, please cite:
+```bash
+python3 noise_generation/inference.py \
+  --input_path datasets/prepared/threePassages/hotpotqa/test.json \
+  --output_path inference/output_data/noise/hotpotqa-test.json \
+  --task gen_counterfactual \
+  --start_idx 0 \
+  --end_idx 10 \
+  --max_concurrent_tasks 10
+```
+
+`bash noise_generation/generate_noise.sh 64` processes every released split and noise type. Outputs default to `inference/output_data/noise_generated/`; existing outputs are resumed. Details are in [noise_generation/README.md](noise_generation/README.md).
+
+## Training data and SFT
+
+The paper samples 16 responses per HotpotQA prompt at temperature 1.0. The four-model wrapper uses these settings:
+
+```bash
+bash inference/generator/.sh/base_sample.sh
+```
+
+Filter responses and convert the common, balanced examples to LLaMA-Factory format:
+
+```bash
+python3 inference/process_utils/filter_rule.py \
+  --input inference/output_data/base_sample/<run> \
+  --output inference/output_data/base_sample/<run>/filtered \
+  --enable-drop 0.05 \
+  --tolerate-mismatch
+
+python3 inference/process_utils/sft_format.py \
+  --input inference/output_data/base_sample/<run>/filtered \
+  --output inference/output_data/base_sample/<run>/sft_formatted
+```
+
+The final SFT settings are LoRA rank 16, sequence length 2048, learning rate `5e-5`, and 2 epochs. Copy the generated per-model JSON files and the entries from `training/dataset_info.json` into a LLaMA-Factory checkout, then run the matching config, for example:
+
+```bash
+llamafactory-cli train /path/to/NAACL/training/qwen2_5_7b_lora_sft.yaml
+```
+
+The reported experiments used four NVIDIA L20 GPUs. Batch size may be reduced for smaller GPUs while increasing gradient accumulation to preserve the effective batch size.
+
+![NOVA data pipeline](figures/figure3.png)
+
+## Reproduction notes
+
+- Backbones: Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, DeepSeek-R1-Distill-Qwen-7B, and DeepSeek-R1-Distill-Llama-8B.
+- Inference: maximum 2048 output tokens and temperature 0, except training response sampling (`N=16`, temperature 1.0).
+- Controlled training/evaluation uses 3 retrieved passages; the 5-passage split is an out-of-distribution evaluation.
+- Real RAG uses top-5 BM25 or `facebook/contriever` results without reranking; Contriever inputs are truncated to 256 tokens with 100 KNN candidates.
+- Dataset layouts and released sample counts are documented in [datasets/README.md](datasets/README.md).
+
+## Citation
 
 ```bibtex
-@misc{liu2026naaclnoiseawareverbalconfidence,
-      title={NAACL: Noise-AwAre Verbal Confidence Calibration for LLMs in RAG Systems}, 
-      author={Jiayu Liu and Rui Wang and Qing Zong and Qingcheng Zeng and Tianshi Zheng and Haochen Shi and Dadi Guo and Baixuan Xu and Chunyang Li and Yangqiu Song},
-      year={2026},
-      eprint={2601.11004},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2601.11004}, 
+@inproceedings{liu2026nova,
+  title     = {{NOVA}: {NO}ise-aware Verbal Confidence {CA}libration for Robust Large Language Models in {RAG} Systems},
+  author    = {Jiayu Liu and Rui Wang and Qing Zong and Yumeng Wang and Cheng Qian and Qingcheng Zeng and Tianshi Zheng and Haochen Shi and Dadi Guo and Baixuan Xu and Chunyang Li and Yangqiu Song},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2026},
+  year      = {2026},
+  url       = {https://arxiv.org/abs/2601.11004}
 }
 ```
 
-## 📄 License
+## License
 
-MIT
-
+This project is released under the [MIT License](license).

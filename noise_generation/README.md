@@ -1,149 +1,44 @@
-# Noise Generation
+# Noise generation
 
-This module generates different types of noise passages for question-answering datasets using LLM APIs.
+This module generates the four controlled passage types used by NOVA with Gemini 2.5 Pro through an OpenAI-compatible API.
 
-## Overview
+## Setup
 
-The noise generation module creates synthetic passages that can be used to test model robustness. It supports four types of noise generation:
-
-1. **Counterfactual** (`gen_counterfactual`) - Passages that contradict the ground truth answer while remaining semantically relevant
-2. **Relevant** (`gen_relevant`) - Passages that share topics/keywords with the question but lack sufficient information
-3. **Irrelevant** (`gen_irrelevant`) - Passages with no semantic connection to the question
-4. **Consistent** (`gen_consistent`) - Passages that support the ground truth answer with consistent information
-
-## Directory Structure
-
-```
-noise_generation/
-├── inference.py        # Main inference script for noise generation
-├── prompt_template.py  # Prompt templates for different noise types
-└── generate_noise.sh   # Batch generation script
-```
-
-## Requirements
-
-- Python 3.x
-- OpenAI-compatible API (configured in `inference.py`)
-- Required packages: `openai`, `tqdm`, `asyncio`
-
-## Configuration
-
-### API Configuration
-
-Set your API credentials in `inference.py` or as environment variables:
+Install the root requirements and set credentials:
 
 ```bash
-export OPENAI_API_KEY="your-api-key"
-export OPENAI_BASE_URL="your-api-base-url"
+python3 -m pip install -r requirements.txt
+export OPENAI_API_KEY="..."
+export OPENAI_BASE_URL="https://your-endpoint.example/v1"  # optional for OpenAI
 ```
 
-Or modify directly in `inference.py`:
-```python
-OPENAI_API_KEY = "your-api-key"
-OPENAI_BASE_URL = "your-api-base-url"
-```
+The model and decoding parameters are defined in `prompt_template.py`. The paper uses Gemini 2.5 Pro, temperature 0.6, and asks for five candidates; the parser retains the last three candidates.
 
-### Model Configuration
-
-Model settings are configured in `prompt_template.py`:
-- `MODEL_NAME`: Model to use (default: "gemini-2.5-pro")
-- `Generation_Config`: Generation parameters (temperature, max_output_tokens)
-
-## Usage
-
-### Single Task Generation
-
-Generate noise passages for a specific dataset:
+## One task
 
 ```bash
-# From NAACL/ directory
-python noise_generation/inference.py \
-    --input_path datasets/original/hotpotqa/test.json \
-    --output_path datasets/noise_generated/hotpotqa/test.json \
-    --task gen_counterfactual \
-    --max_concurrent_tasks 10
+python3 noise_generation/inference.py \
+  --input_path datasets/prepared/threePassages/hotpotqa/test.json \
+  --output_path inference/output_data/noise/hotpotqa-test.json \
+  --task gen_counterfactual \
+  --start_idx 0 \
+  --end_idx 100 \
+  --max_concurrent_tasks 10
 ```
 
-**Arguments:**
-- `--input_path`: Path to input JSON file
-- `--output_path`: Path to output JSON file
-- `--task`: Noise generation task type
-  - `gen_counterfactual` - Generate counterfactual passages
-  - `gen_relevant` - Generate relevant noise passages
-  - `gen_irrelevant` - Generate irrelevant noise passages
-  - `gen_consistent` - Generate consistent passages
-- `--max_concurrent_tasks`: Maximum number of concurrent API calls (default: 10)
-- `--start_idx`: Start index for processing (default: 0)
-- `--end_idx`: End index for processing (if 0, processes all from start_idx)
+Valid generation tasks are `gen_counterfactual`, `gen_relevant`, `gen_irrelevant`, and `gen_consistent`. `--end_idx 0` processes through the end. Partial runs preserve records outside the selected interval, and an existing output can be resumed to add another passage type.
 
-### Batch Generation
-
-Generate all noise types for all datasets:
+## Batch generation
 
 ```bash
-# From NAACL/ directory
-bash noise_generation/generate_noise.sh [max_concurrent_tasks]
-```
-
-This script will:
-1. Process all datasets: bamboogle, hotpotqa, nq, strategyqa
-2. Generate all noise types for each dataset
-3. Save outputs to `datasets/noise_generated/`
-
-**Example:**
-```bash
-# Use default max_concurrent_tasks (256)
-bash noise_generation/generate_noise.sh
-
-# Custom max_concurrent_tasks
 bash noise_generation/generate_noise.sh 64
 ```
 
-## Examples
-
-### Generate Counterfactual Passages
+The batch script processes all released three-passage splits and four noise types. It writes to `inference/output_data/noise_generated/` and resumes existing files. Set `START_IDX` and `END_IDX` to restrict the interval, or `OUTPUT_ROOT` to choose another output directory:
 
 ```bash
-python noise_generation/inference.py \
-    --input_path datasets/original/strategyqa/test.json \
-    --output_path datasets/noise_generated/strategyqa/test.json \
-    --task gen_counterfactual \
-    --max_concurrent_tasks 10
+START_IDX=0 END_IDX=10 OUTPUT_ROOT=/tmp/nova-noise \
+  bash noise_generation/generate_noise.sh 10
 ```
 
-### Generate Relevant Noise (Subset)
-
-```bash
-python noise_generation/inference.py \
-    --input_path datasets/original/hotpotqa/test.json \
-    --output_path datasets/noise_generated/hotpotqa/test.json \
-    --task gen_relevant \
-    --start_idx 0 \
-    --end_idx 100 \
-    --max_concurrent_tasks 20
-```
-
-### Generate Irrelevant Noise
-
-```bash
-python noise_generation/inference.py \
-    --input_path datasets/original/nq/test.json \
-    --output_path datasets/noise_generated/nq/test.json \
-    --task gen_irrelevant \
-    --max_concurrent_tasks 10
-```
-
-## Output Format
-
-Generated noise passages are added to the output JSON file. Each passage includes:
-- `content`: The passage text
-- `type`: Passage type (counterfactual, relevant, irrelevant, consistent)
-- Additional metadata based on the noise type (e.g., "Counterfactual Answer" for counterfactual passages)
-
-## Notes
-
-- If the output file already exists, it will be loaded and new passages will be appended
-- The script uses asynchronous API calls for efficient batch processing
-- Progress is tracked using tqdm
-- All paths should be relative to the `NAACL/` root directory
-
+Generated files preserve all records outside a partial run's selected interval.

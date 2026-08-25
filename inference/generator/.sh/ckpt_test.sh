@@ -92,7 +92,7 @@ for idx in "${!CHECKPOINTS[@]}"; do
 
     mkdir -p "$(dirname "$output_file")"
 
-    python inference/generator/budget_forcing.py \
+    python3 inference/generator/budget_forcing.py \
         --input_file "$INPUT_FILE" \
         --dataset "$DATASET" \
         --output_file "$output_file" \
@@ -114,4 +114,6 @@ for idx in "${!CHECKPOINTS[@]}"; do
 done
 
 echo ""
-echo "All ckpt_test jobs launched! Outputs will accumulate under: $OUTPUT_DIR"
+echo "Waiting for all ckpt_test jobs to finish..."
+wait
+echo "All ckpt_test jobs completed. Outputs are under: $OUTPUT_DIR"

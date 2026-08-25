@@ -1,13 +1,10 @@
 from base import BaseGenerator
 from typing import List, Tuple, Optional
-from tqdm import tqdm
 import argparse
 import json
 import os
 from prompts import *
 from inference_utils import *   
-
-HOME_DIR = os.getcwd()
 
 def process_input_file(args, batch):
     # here, batches refer to the whole input data
@@ -48,13 +45,20 @@ def batch_inference(args):
     if os.path.exists(output_path):
         print(f"Output file {output_path} already exists, loading it as the input file.")
         input_file = output_path
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    output_dir = os.path.dirname(output_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     
     # check with the inputs
     print("input_file: ", input_file)
     print("model_name: ", args.model_name)
 
-    input_data = json.load(open(input_file, "r"))[args.start_index:args.end_index] if args.end_index > 0 else json.load(open(input_file, "r"))
+    with open(input_file, "r", encoding="utf-8") as f:
+        input_data = json.load(f)
+    if args.end_index > 0:
+        input_data = input_data[args.start_index:args.end_index]
+    elif args.start_index > 0:
+        input_data = input_data[args.start_index:]
     print("the length of input data is: ", len(input_data))
     
     # turn in into the format of list of dict (including the sample nums if needed)
@@ -125,7 +129,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_file", type=str, required=True)
     parser.add_argument("--dataset", type=str, required=True)
-    parser.add_argument("--output_file", type=str)
+    parser.add_argument("--output_file", type=str, required=True)
     parser.add_argument("--task", type=str, required=True, choices=["base_without_rules", "base_pure", "base_sample", "ckpt_test", "rag_test"])
     parser.add_argument("--prompt_type", type=str, default="vanilla", choices=["vanilla", "cot", "self-probing", "multi-step", "top-k"])
     parser.add_argument("--question_type", type=str, required=True, choices=["fact-mem-cont", "mem-intra-cont", "non-relevant", "bi", "mc", "oe"])
@@ -159,7 +163,7 @@ vllm serve meta-llama/Llama-3.1-8B --port 10003
 example usage:
 
 rag_test:
-python generator/budget_forcing.py \
+python3 inference/generator/budget_forcing.py \
     --input_file datasets3_raged/strategyqa/test.json \
     --dataset StrategyQA \
     --output_file output_data/rag_test/StrategyQA_test.json \
@@ -172,7 +176,7 @@ python generator/budget_forcing.py \
     --start_index 0 \
     --end_index 10
 
-python generator/budget_forcing.py \
+python3 inference/generator/budget_forcing.py \
     --input_file datasets3_raged/strategyqa/test.json \
     --dataset StrategyQA \
     --output_file output_data/rag_test/StrategyQA_test.json \

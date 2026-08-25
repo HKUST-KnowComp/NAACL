@@ -19,7 +19,7 @@ suitable for training. It:
 5. Formats samples into instruction-input-output format
 
 Usage:
-    python inference/process_utils/sft_format.py \
+    python3 inference/process_utils/sft_format.py \
         --input inference/output_data/base_sample/TIME_STAMP/filtered \
         --output inference/output_data/base_sample/TIME_STAMP/sft_formatted
 """
@@ -305,11 +305,19 @@ def select_response(
     if len(candidates) == 1:
         return candidates[0]
 
-    conf_a, conf_b = candidates[0]["confidence"], candidates[1]["confidence"]
-    if conf_a == conf_b:
-        return TIE_BREAKER.choice(candidates)
-    chosen = candidates[0] if conf_a < conf_b else candidates[1]
-    return chosen
+    def brier_score(candidate: Dict[str, Any]) -> float:
+        probability = min(max(candidate["confidence"] / 100.0, 0.0), 1.0)
+        target = 1.0 if candidate["is_correct"] else 0.0
+        return (probability - target) ** 2
+
+    scores = [brier_score(candidate) for candidate in candidates]
+    best_score = min(scores)
+    best = [
+        candidate
+        for candidate, score in zip(candidates, scores)
+        if abs(score - best_score) < 1e-12
+    ]
+    return TIE_BREAKER.choice(best)
 
 
 def build_facts(item: Dict[str, Any]) -> str:

@@ -28,15 +28,15 @@ def parse_counterfactual_response(response_text: str) -> list:
     Expected format:
     Passage 1: [passage text]
     Counterfactual Answer 1: [answer]
-    
+
     Returns list of dicts with 'content', 'type', and 'Counterfactual Answer' keys.
     """
     passages = []
     lines = response_text.strip().split('\n')
-    
+
     current_passage = None
     current_answer = None
-    
+
     for line in lines:
         line = line.strip()
         if line.startswith('Passage '):
@@ -52,7 +52,7 @@ def parse_counterfactual_response(response_text: str) -> list:
         elif line.startswith('Counterfactual Answer '):
             # Extract answer text after "Counterfactual Answer X: "
             current_answer = line.split(': ', 1)[1] if ': ' in line else line
-    
+
     # Add the last passage if exists
     if current_passage and current_answer:
         passages.append({
@@ -60,7 +60,7 @@ def parse_counterfactual_response(response_text: str) -> list:
             'type': 'counterfactual',
             'Counterfactual Answer': current_answer
         })
-    
+
     return passages
 
 
@@ -70,15 +70,15 @@ def parse_relevant_response(response_text: str) -> list:
     Expected format:
     Passage 1: [passage text]
     Shared Topic/Keywords 1: [topic/keywords]
-    
+
     Returns list of dicts with 'content', 'type', and 'Shared Topic/Keywords' keys.
     """
     passages = []
     lines = response_text.strip().split('\n')
-    
+
     current_passage = None
     current_topic = None
-    
+
     for line in lines:
         line = line.strip()
         if line.startswith('Passage '):
@@ -94,7 +94,7 @@ def parse_relevant_response(response_text: str) -> list:
         elif line.startswith('Shared Topic/Keywords '):
             # Extract topic text after "Shared Topic/Keywords X: "
             current_topic = line.split(': ', 1)[1] if ': ' in line else line
-    
+
     # Add the last passage if exists
     if current_passage and current_topic:
         passages.append({
@@ -102,7 +102,7 @@ def parse_relevant_response(response_text: str) -> list:
             'type': 'relevant',
             'Shared Topic/Keywords': current_topic
         })
-    
+
     return passages
 
 
@@ -112,15 +112,15 @@ def parse_irrelevant_response(response_text: str) -> list:
     Expected format:
     Passage 1: [passage text]
     Topic 1: [topic]
-    
+
     Returns list of dicts with 'content', 'type', and 'Topic' keys.
     """
     passages = []
     lines = response_text.strip().split('\n')
-    
+
     current_passage = None
     current_topic = None
-    
+
     for line in lines:
         line = line.strip()
         if line.startswith('Passage '):
@@ -136,7 +136,7 @@ def parse_irrelevant_response(response_text: str) -> list:
         elif line.startswith('Topic '):
             # Extract topic text after "Topic X: "
             current_topic = line.split(': ', 1)[1] if ': ' in line else line
-    
+
     # Add the last passage if exists
     if current_passage and current_topic:
         passages.append({
@@ -144,7 +144,7 @@ def parse_irrelevant_response(response_text: str) -> list:
             'type': 'irrelevant',
             'Topic': current_topic
         })
-    
+
     return passages
 
 
@@ -264,7 +264,7 @@ async def run_single_inference(args, query: str, passage: str, gt_answer: str, c
         }
 
     final_prompt = format_prompt(prompt_template, format_setting)
-    
+
     try:
         response = await client.chat.completions.create(
             model=model_name,
@@ -272,9 +272,9 @@ async def run_single_inference(args, query: str, passage: str, gt_answer: str, c
             temperature=generation_config.get("temperature", 0.6),
             max_tokens=generation_config.get("max_output_tokens", 8192),
         )
-        
+
         response_text = response.choices[0].message.content.strip()
-                    
+
         return response_text
 
     except Exception as e:
@@ -301,10 +301,10 @@ async def run_concurrent_inference(args, model_name: str, tasks_data: list, max_
         client_kwargs["api_key"] = OPENAI_API_KEY
     if OPENAI_BASE_URL:
         client_kwargs["base_url"] = OPENAI_BASE_URL
-    
+
     if not client_kwargs:
         raise ValueError("Please set OPENAI_API_KEY and/or OPENAI_BASE_URL in inference.py")
-    
+
     client = AsyncOpenAI(**client_kwargs)
 
     generation_config = Generation_Config
@@ -340,9 +340,9 @@ def batch_inference(args):
         try:
             with open(args.output_path, 'r') as f:
                 existing_data = json.load(f)
-            
+
             # Check if the existing file has the expected format (list with items having 'id', 'question', etc.)
-            if (isinstance(existing_data, list) and len(existing_data) > 0 and 
+            if (isinstance(existing_data, list) and len(existing_data) > 0 and
                 all(isinstance(item, dict) and 'id' in item and 'question' in item for item in existing_data[:5])):
                 print(f"Using existing output file as input: {args.output_path}")
                 data = existing_data
@@ -366,11 +366,11 @@ def batch_inference(args):
     end_idx = args.end_idx if args.end_idx is not None else len(data)
     if end_idx == 0:
         end_idx = len(data)
-    
+
     # Ensure valid indices
     start_idx = max(0, start_idx)
     end_idx = min(len(data), end_idx)
-    
+
     if start_idx >= end_idx:
         print(f"Warning: Invalid index range. start_idx({start_idx}) >= end_idx({end_idx})")
         print("Processing all items if possible.")
@@ -379,7 +379,7 @@ def batch_inference(args):
             end_idx = len(data)
         else:
             return []
-    
+
     print(f"Processing items from index {start_idx} to {end_idx-1} (total: {end_idx-start_idx} items)")
 
     for index in range(start_idx, end_idx):
@@ -441,11 +441,11 @@ def batch_inference(args):
         tasks_data=TASKS_DATA,
         max_concurrent_tasks=args.max_concurrent_tasks
     ))
-    
+
     end_time = time.time()
 
     print(f"--- Completed {len(TASKS_DATA)} tasks in {end_time - start_time:.2f} seconds ---")
-    
+
     results = []
     for record, result in zip(information, final_results):
         # Start with the original data structure
@@ -479,37 +479,17 @@ def batch_inference(args):
 
         results.append(result_entry)
 
-    save_results(results, args.output_path)
-    return results
+    # Preserve items outside the selected range so partial runs are resumable.
+    for offset, result_entry in enumerate(results):
+        data[start_idx + offset] = result_entry
+
+    save_results(data, args.output_path)
+    return data
 
 def save_results(results, output_path):
-    # # Check if output file already exists
-    # if os.path.exists(output_path):
-    #     print(f"Output file {output_path} already exists. Loading and merging results...")
-    #     with open(output_path, 'r') as f:
-    #         existing_results = json.load(f)
-
-    #     # Create a mapping of existing results by ID for efficient lookup
-    #     existing_by_id = {item.get('id'): item for item in existing_results}
-
-    #     for new_item in results:
-    #         item_id = new_item.get('id')
-    #         if item_id in existing_by_id:
-    #             # 直接追加新的passages到现有passages后面
-    #             existing_item = existing_by_id[item_id]
-    #             existing_item["passages"].extend(new_item.get("passages", []))
-    #             print(f"Merged passages for item {item_id}")
-    #         else:
-    #             # 新item，直接添加到结果列表
-    #             existing_results.append(new_item)
-    #             print(f"Added new item {item_id}")
-
-    #     with open(output_path, 'w') as outfile:
-    #         json.dump(existing_results, outfile, indent=2)
-    #     print(f"Successfully merged results and saved to {output_path}")
-    # else:
-    
-    # print(f"Creating new output file {output_path}...")
+    output_dir = os.path.dirname(output_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     with open(output_path, 'w') as outfile:
         json.dump(results, outfile, indent=2)
     print(f"Successfully saved {len(results)} items to {output_path}")
@@ -518,9 +498,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text Generation and Classification using Gemini-2.5-Pro")
     parser.add_argument("--input_path", type=str, required=True, help="Path to the input JSON file.")
     parser.add_argument("--output_path", type=str, required=True, help="Path to the output JSON file.")
-    parser.add_argument("--task", type=str, required=True, choices=["NLI", "gen_supportive", "gen_counterfactual", "gen_relevant", "gen_irrelevant", "gen_consistent"], 
+    parser.add_argument("--task", type=str, required=True, choices=["NLI", "gen_supportive", "gen_counterfactual", "gen_relevant", "gen_irrelevant", "gen_consistent"],
                         help="Task type: NLI, gen_supportive, gen_counterfactual, gen_relevant, gen_irrelevant, or gen_consistent.")
-    parser.add_argument("--passage_name", type=str, default="facts", 
+    parser.add_argument("--passage_name", type=str, default="facts",
                         help="Key name for passages in the input JSON. Not used for noise generation tasks.")
     parser.add_argument("--max_concurrent_tasks", type=int, default=10, help="Maximum number of concurrent tasks.")
     parser.add_argument("--start_idx", type=int, default=0, help="Start index for processing items (inclusive).")
@@ -533,14 +513,14 @@ if __name__ == "__main__":
 Example commands:
 
 # Generate counterfactual passages
-python NAACL/noise_generation/inference.py \
+python3 noise_generation/inference.py \
 --input_path datasets/hotpotqa/test.json \
 --output_path output/hotpotqa_counterfactual.json \
 --task gen_counterfactual \
 --max_concurrent_tasks 5
 
 # Generate relevant noise passages for items 0-3
-python NAACL/noise_generation/inference.py \
+python3 noise_generation/inference.py \
 --input_path datasets/hotpotqa/test.json \
 --output_path output/hotpotqa_relevant_test.json \
 --task gen_relevant \
@@ -550,7 +530,7 @@ python NAACL/noise_generation/inference.py \
 
 # Generate irrelevant noise passages for items 10-20
 # If output file exists, it will be used as input and passages will be appended
-python NAACL/noise_generation/inference.py \
+python3 noise_generation/inference.py \
 --input_path datasets/hotpotqa/test.json \
 --output_path output/hotpotqa_irrelevant.json \
 --task gen_irrelevant \
@@ -559,14 +539,14 @@ python NAACL/noise_generation/inference.py \
 --max_concurrent_tasks 5
 
 # NLI classification
-python NAACL/noise_generation/inference.py \
+python3 noise_generation/inference.py \
 --input_path input_data/test.json \
 --output_path output/nli_results.json \
 --task NLI \
 --passage_name passages \
 --max_concurrent_tasks 5
 
-# Note: 
+# Note:
 # - Model name is configured in prompt_template.py MODEL_NAME
 # - API key and base URL should be set in inference.py (OPENAI_API_KEY, OPENAI_BASE_URL)
 # - If output file exists, it will be loaded and new passages will be appended

@@ -77,7 +77,7 @@ for idx in "${!BASE_MODELS[@]}"; do
 
     mkdir -p "$(dirname "$output_file")"
 
-    python inference/generator/budget_forcing.py \
+    python3 inference/generator/budget_forcing.py \
         --input_file "$INPUT_FILE" \
         --dataset "$DATASET" \
         --output_file "$output_file" \
@@ -100,4 +100,6 @@ for idx in "${!BASE_MODELS[@]}"; do
 done
 
 echo ""
-echo "All base_without_rules jobs launched! Outputs will accumulate under: $OUTPUT_DIR"
+echo "Waiting for all base_without_rules jobs to finish..."
+wait
+echo "All base_without_rules jobs completed. Outputs are under: $OUTPUT_DIR"
