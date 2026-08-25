@@ -2,7 +2,7 @@
 
 [Paper](https://arxiv.org/abs/2601.11004) | [Hugging Face paper page](https://huggingface.co/papers/2601.11004) | [X thread](https://x.com/jiayujeff/status/2013769332619104509)
 
-Official code for **NOVA: NOise-aware Verbal Confidence CAlibration for Robust Large Language Models in RAG Systems**, accepted to **Findings of EMNLP 2026**. The repository URL retains its original `NAACL` name for compatibility.
+Official code for **NOVA: NOise-aware Verbal Confidence CAlibration for Robust Large Language Models in RAG Systems**, accepted to **Findings of EMNLP 2026**. 
 
 NOVA studies verbal confidence under noisy retrieval and trains language models to explicitly judge passage utility before producing an answer and confidence score. The method uses about 2K filtered HotpotQA trajectories and improves calibration under both controlled retrieval noise and real retrievers.
 
