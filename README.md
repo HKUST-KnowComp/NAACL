@@ -1,4 +1,4 @@
-# NOVA
+# \[EMNLP 2026 Findings\] NOVA
 
 [Paper](https://arxiv.org/abs/2601.11004) | [Hugging Face paper page](https://huggingface.co/papers/2601.11004) | [X thread](https://x.com/jiayujeff/status/2013769332619104509)
 
